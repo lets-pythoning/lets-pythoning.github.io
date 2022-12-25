@@ -1,0 +1,98 @@
+@import url("/css/hljs-github.css");
+.body {
+  line-height: 2em;
+  overflow: hidden;
+}
+.post-inner {
+  margin: 0 auto;
+  max-width: 900px;
+}
+.post-inner .video-container {
+  height: 0;
+  margin-bottom: 20px;
+  overflow: hidden;
+  padding-top: 75%;
+  position: relative;
+  width: 100%;
+}
+.post-inner .video-container iframe {
+  height: 100%;
+  left: 0;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.post-content {
+  padding: 10px 0;
+}
+.post-gallery {
+  align-items: center;
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-bottom: 20px;
+}
+.post-title {
+  font-size: 30px;
+}
+.post-content__head {
+  margin: 40px 0;
+}
+.post__foot {
+  max-width: 900px;
+  margin: 100px auto;
+}
+.post-nav {
+  position: relative;
+  margin-top: 60px;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.post-nav .vhr {
+  position: absolute;
+  height: 50px;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: #f5f5f5;
+  width: 1px;
+}
+.post-nav-item,
+.post-nav-item-left,
+.post-nav-item-right,
+.post-nav-item-left-right {
+  text-decoration: none;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.post-nav-item-left,
+.post-nav-item-left-left,
+.post-nav-item-right-left,
+.post-nav-item-left-right-left {
+  align-items: flex-start;
+  padding-right: 15px;
+}
+.post-nav-item-right,
+.post-nav-item-left-right,
+.post-nav-item-right-right,
+.post-nav-item-left-right-right {
+  align-items: flex-end;
+  padding-left: 15px;
+}
+.related-post {
+  margin: 40px 0;
+}
+@media screen and (max-width: 1023px) {
+  .post-content,
+  .post__foot {
+    padding: 0 30px;
+  }
+  .post-gallery {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf8" />
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <title>
+      
+        NOTES
+      
+    </title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    
+      <link rel="apple-touch-icon"
+            sizes="180x180"
+            href="/images/apple-touch-icon.png"/>
+    
+    
+      <link rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/images/favicon-32x32.png"/>
+    
+    
+      <link rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/images/favicon-16x16.png"/>
+    
+    
+      <link rel="mask-icon"
+            href="/images/logo.svg"
+            color=""/>
+    
+    
+    <link rel="stylesheet" type="text/css" href="/css/layout.css"/>
+    
+    
+  
+  <link rel="stylesheet" type="text/css" href="/css/index.css"/>
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div class="head">
+      <div class="nav">
+        <a href="/" class="nav-logo">
+          <img alt="logo" height="60px" width="60px" src="/images/logo.svg" />
+        </a>
+        <input id="navBtn" type="checkbox"/>
+        <div class="nav-menu">
+          
+            
+              <a class="nav-menu-item" href="/informatics">信息学</a>
+            
+              <a class="nav-menu-item" href="/mathematics">数学</a>
+            
+              <a class="nav-menu-item" href="/nonsense">杂谈</a>
+            
+          
+        </div>
+        <label class="nav-btn" for="navBtn"></label>
+      </div>
+    </div>
+    <div class="body">
+      
+  <div class="wall wall-index">
+    <div class="wall-main" id="wall-main">
+      <div class="wall-title">NOTES</div>
+      <div class="wall-subtitle">李某人的云端笔记</div>
+      <div class="wall-description">「一萧一剑平生意，负尽狂名十五年」</div>
+    </div>
+    <div class="wall-bg">
+      <div class="wall-bg-index">
+        <div class="hello-world">
+          <div>> Hello world</div>
+          <div class="cursor"></div>
+        </div>
+        <div class="normal-eqt">
+          <img alt="normal" width="300px" height="" src="/images/normal.svg" />
+        </div>
+        <canvas width="400" height="400" id="heart-curve"></canvas>
+        <div class="motto"></div>
+        <div class="poem">
+          
+            渔舟唱晚，响穷彭蠡之滨
+            <br/>
+          
+            雁阵惊寒，声断衡阳之浦
+            <br/>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="about">
+    <div class="about-photo"
+         style="background-image: url(/images/about.jpg)"></div>
+    <div class="about-text">
+      <div class="about-title">
+        <div class="matts">关</div><div class="matts">于</div><div class="matts">某</div><div class="matts">人</div>
+      </div>
+      <div class="about-detail">
+        <div class="about-text-p">
+          
+            
+              辽宁省信息学竞赛在役选手, CSP2022 提高组省一等奖
+              <br />
+            
+          
+            
+              <br/>
+            
+          
+            
+              大连某中学普通初二学生, 曾任年级第一, 现任垫底废物
+              <br />
+            
+          
+            
+              <br/>
+            
+          
+            
+              初等数学和排版艺术爱好者
+              <br />
+            
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="timeline-head">
+      <div class="title">时间线</div>
+      <div class="radio-wrapper">
+        <div class="radio">
+          <input id="radio-article" type="checkbox" />
+          <label class="radio-skin--yellow" for="radio-article"></label>
+        </div>
+        <div class="radio">
+          <input id="radio-app" type="checkbox" checked />
+          <label class="radio-skin--green" for="radio-app"></label>
+        </div>
+        <div class="radio">
+          <input id="radio-event" type="checkbox" checked />
+          <label class="radio-skin--blue" for="radio-event"></label>
+        </div>
+      </div>
+    </div>
+    <div class="timeline-body">
+      <div class="timeline-item-first">
+        <div class="line-anchor line-anchor--now"></div>
+      </div>
+      <div class="timeline-list" id="timeline-list"></div>
+      <div class="timeline-item-last">
+        <div class="line-anchor line-anchor--end"></div>
+      </div>
+    </div>
+  </div>
+
+    </div>
+    <div class="foot">
+      <div class="foot-inner">
+        <div class="foot__head">
+          
+            <div class="foot-line">
+              <div class="matts">披</div><div class="matts">绣</div><div class="matts">闼</div>
+            </div>
+          
+            <div class="foot-line">
+              <div class="matts">俯</div><div class="matts">雕</div><div class="matts">甍</div>
+            </div>
+          
+            <div class="foot-line">
+              <div class="matts">山</div><div class="matts">原</div><div class="matts">旷</div><div class="matts">其</div><div class="matts">盈</div><div class="matts">视</div>
+            </div>
+          
+            <div class="foot-line">
+              <div class="matts">川</div><div class="matts">泽</div><div class="matts">纡</div><div class="matts">其</div><div class="matts">骇</div><div class="matts">瞩</div>
+            </div>
+          
+        </div>
+        <div class="foot__body">
+          
+            <div class="foot-item">
+              <div class="foot-item__head">朋友</div>
+              <div class="foot-item__body">
+                
+                  <div class="text">
+                    <img alt="link"
+                         height="20px"
+                         width="20px"
+                         src="/images/icon/icon-link.svg"/>
+                    <a class="foot-link" target="_blank" rel="noopener" href="https://github.com/hooozen/hexo-theme-tranquility">Theme Tranquility</a>
+                  </div>
+                
+                <div class="text">
+                  <img alt="link"
+                       height="20px"
+                       width="20px"
+                       src="/images/icon/icon-link+.svg"/>
+                  <a class="foot-link"
+                     href="mailto:arthureuler.pythoning@gmail.com?subject=%E7%94%B3%E8%AF%B7%20Hozen.site%20%E7%9A%84%E5%8F%8B%E9%93%BE%E4%BD%8D%E7%BD%AE">
+                  申请友链</a>
+                </div>
+              </div>
+            </div>
+          
+          
+            <div class="foot-item">
+              <div class="foot-item__head">账号</div>
+              <div class="foot-item__body">
+                
+                  <div class="text">
+                    <img alt="link" height="20px" width="20px" src="/images/logo-github.svg"/>
+                    <a class="foot-link" target="_blank" rel="noopener" href="https://github.com/lets-pythoning/">github</a>
+                  </div>
+                
+                  <div class="text">
+                    <img alt="link" height="20px" width="20px" src="/images/logo-zh.svg"/>
+                    <a class="foot-link" target="_blank" rel="noopener" href="https://www.zhihu.com/people/lets-pythoning/">知乎</a>
+                  </div>
+                
+                  <div class="text">
+                    <img alt="link" height="20px" width="20px" src="/images/logo-luogu.png"/>
+                    <a class="foot-link" target="_blank" rel="noopener" href="https://www.luogu.com.cn/user/548505">洛谷</a>
+                  </div>
+                
+              </div>
+            </div>
+          
+          <div class="foot-item">
+            <div class="foot-item__head">联系</div>
+            <div class="foot-item__body">
+              <div class="text">
+                <img alt="link"
+                     height="20px"
+                     width="20px"
+                     src="/images/icon/icon-email.svg"/>
+                <a class="foot-link" href="mailto:arthureuler.pythoning@gmail.com">arthureuler.pythoning@gmail.com</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="copyright">
+          <a href="http://example.com">NOTES</a> &nbsp;|&nbsp;由&nbsp;<a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>&nbsp;及&nbsp;
+          <svg width="20" height="20" viewBox="0 0 725 725">
+            <path fill-rule="evenodd" fill="rgb(221, 221, 221)"
+            d="M145.870,236.632 L396.955,103.578 L431.292,419.44 L156.600,522.53 L145.870,236.632 Z" />
+            <path fill-rule="evenodd" fill="rgb(159, 159, 159)"
+            d="M396.955,103.578 L564.345,234.486 L611.558,513.469 L431.292,419.44 L396.955,103.578 Z" />
+            <path fill-rule="evenodd" fill="rgb(0, 0, 0)"
+            d="M431.292,419.44 L611.558,513.469 L358.327,595.18 L156.600,522.53 L431.292,419.44 Z" />
+          </svg>
+          <a target="_blank" rel="noopener" href="https://github.com/hooozen/hexo-theme-tranquility">致远</a>&nbsp;驱动
+        </div>
+      </div>
+    </div>
+    
+    
+  <script type="text/javascript">
+  function HeartCurve(w, h) {
+    this.w = w;
+    this.h = h;
+    this.a = undefined;
+    this.ctx = undefined;
+    this.deg = 0;
+    this.speed = 0.4;
+    this.isPause = false;
+    this.init();
+  }
+  HeartCurve.prototype.init = function () {
+    const {
+      w,
+      h
+    } = this;
+    const canvas = document.querySelector('#heart-curve');
+    if (!canvas) throw Error('no canvas element!');
+
+    this.ctx = canvas.getContext('2d');
+    this.ctx.translate(2 * w / 3, h / 2);
+    this.ctx.lineJoin = 'round';
+    this.a = w / 6.2;
+    this.id = null;
+    return this;
+  };
+  HeartCurve.prototype._drawAxis = function () {
+    const {
+      ctx,
+      w,
+      h
+    } = this;
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#999";
+    ctx.beginPath();
+    ctx.moveTo(-w * 2 / 3, 0);
+    ctx.lineTo(w / 3, 0);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, -h * 0.48);
+    ctx.lineTo(0, h * 0.48);
+    ctx.stroke();
+  };
+  HeartCurve.prototype._drawCure = function () {
+    const {
+      ctx,
+      a
+    } = this;
+    ctx.beginPath();
+    let x, y, deg = 0;
+    ctx.moveTo(0, 0);
+    ctx.strokeStyle = "#ff0000";
+    while (deg <= 360) {
+      const theta = deg / 180 * Math.PI;
+      r = 2 * a * (1 - Math.cos(theta));
+      x = r * Math.cos(theta);
+      y = r * Math.sin(theta);
+      ctx.lineTo(x, y);
+      deg++;
+    }
+    ctx.stroke();
+  };
+  HeartCurve.prototype.spin = function () {
+    let {
+      a,
+      w,
+      h,
+      deg,
+      ctx
+    } = this;
+    if (deg >= 360) deg = 0;
+
+    ctx.clearRect(-w / 3 * 2, -h / 2, w, h);
+    const theta = deg / 180 * Math.PI;
+    this._drawAxis();
+    ctx.lineWidth = 2;
+    this._drawCure();
+    ctx.strokeStyle = "#000";
+    ctx.beginPath();
+    ctx.arc(-a, 0, a, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(2 * a * Math.cos(theta) - a, 2 * a * Math.sin(theta), a, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.beginPath();
+    let r = 2 * a * (1 - Math.cos(theta));
+    let x = r * Math.cos(theta);
+    let y = r * Math.sin(theta);
+    ctx.arc(x, y, 3, 0, 2 * Math.PI);
+    ctx.fill();
+    if (this.isPause) return;
+
+    this.deg = deg + this.speed;
+    this.id = window.requestAnimationFrame(this.spin.bind(this));
+  };
+  HeartCurve.prototype.pause = function () {
+    this.isPause = true;
+    if (window.cancelAnimationFrame) {
+      window.cancelAnimationFrame(this.id);
+    }
+  };
+  HeartCurve.prototype.resume = function () {
+    this.isPause = false;
+    this.spin();
+  };
+
+  (function () {
+    const heartCurve = new HeartCurve(400, 400);
+    heartCurve.spin();
+    mobileAdjust(window.matchMedia("(hover:none"));
+    window.matchMedia("(hover:none)").addListener(mobileAdjust);
+
+    function mobileAdjust(media) {
+      const wallEl = document.querySelector('#wall-main')
+      if (!media.matches) {
+        heartCurve.pause();
+        wallEl.addEventListener('mouseenter', () => {
+          console.log('resume');
+          heartCurve.resume();
+        });
+        wallEl.addEventListener('mouseleave', () => {
+          console.log('pause');
+          heartCurve.pause();
+        });
+      }
+    }
+  })();
+</script>
+  
+  
+  <script type="text/javascript">
+    const timelineData = [{"title":"树链剖分","path":"2022/12/树链剖分/","type":"event","date":"2022-12-25"}]
+    listEl = document.querySelector("#timeline-list");
+    radioApp = document.querySelector("#radio-app");
+    radioArticle = document.querySelector("#radio-article");
+    radioEvent = document.querySelector("#radio-event");
+    const visibleType = {
+      app: true,
+      article: false,
+      event: true
+    };
+    radioApp.addEventListener('change', e => updateList('app', e.target.checked));
+    radioArticle.addEventListener('change', e => updateList('article', e.target.checked));
+    radioEvent.addEventListener('change', e => updateList('event', e.target.checked));
+
+    function updateList(type, value) {
+      listDom.filter(line => line.type === type)
+        .forEach(line => {
+          if (value) {
+            line.el.className = line.el.className
+              .replace(/--hidden$/, "");
+          } else
+            line.el.className += "--hidden";
+        });
+    }
+    const listDom = timelineData.map(t => getLine(t));
+    listEl.append(...listDom.map(i => i.el));
+    updateList('article', false);
+
+    function getLine(data) {
+      const item = document.createElement("DIV");
+      item.className = `timeline-item-${data.type} timeline-item`;
+      item.innerHTML = `
+                          <div class="line-date">
+                          <div class="line-date-tag">${data.date}</div></div>
+                          <div class="line-anchor"></div>
+                          <div class="line-title">
+                              <img class="text-icon" src="/images/icon/icon-${data.type}.svg"/><a class="timeline-post" href="${data.path}">${data.title}</a>
+                          </div>
+                          `;
+      return {
+        el: item,
+        type: data.type,
+      };
+    };
+  </script >
+  
+
+  </body>
+</html>
