@@ -72,6 +72,8 @@
   
     <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="post-tag">#数据结构</a>
   
+    <a href="/tags/%E6%A0%91%E4%B8%8A%E9%97%AE%E9%A2%98/" class="post-tag">#树上问题</a>
+  
 
 
           <span class="post-date">2022/12/25</span>
@@ -205,6 +207,102 @@
 <p>切记, 用线段树 ( 或其它任何数据结构 ) 只能查询 / 修改在同一条链上的数据, 我们所作的一切操作都是为了将查询 / 修改的区间放在同一条链上</p>
 <p>加上取模操作, 此代码可以通过 <a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3384">P3384 树链剖分</a>这道模板题</p>
 <h2 id="其他例题">其他例题</h2>
+<h3 id="p2590-树的统计"><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2590">P2590 树的统计</a></h3>
+<p>树链剖分裸题, 要求树上单点修改, 查询树链和, 查询树链最大值, 那么可以开一棵节点是结构体的线段树, 维护区间和和区间最大值, 都支持单点修改即可</p>
+<p>线段树单点修改部分代码:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> tree_modify<span class="op">(</span><span class="dt">int</span> target<span class="op">,</span> <span class="dt">int</span> from<span class="op">,</span> <span class="dt">int</span> to<span class="op">,</span> <span class="dt">int</span> current<span class="op">,</span> <span class="dt">int</span> modifier<span class="op">)</span>  </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>from <span class="op">==</span> to <span class="op">&amp;&amp;</span> from <span class="op">==</span> target<span class="op">)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        tree<span class="op">[</span>current<span class="op">].</span>sum <span class="op">=</span> modifier<span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        tree<span class="op">[</span>current<span class="op">].</span>max <span class="op">=</span> modifier<span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> middle <span class="op">=</span> <span class="op">((</span>to <span class="op">-</span> from<span class="op">)</span> <span class="op">&gt;&gt;</span> <span class="dv">1</span><span class="op">)</span> <span class="op">+</span> from<span class="op">;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>target <span class="op">&lt;=</span> middle<span class="op">)</span>  <span class="op">&#123;</span> tree_modify<span class="op">(</span>target<span class="op">,</span> from<span class="op">,</span> middle<span class="op">,</span> current <span class="op">&lt;&lt;</span> <span class="dv">1</span><span class="op">,</span> modifier<span class="op">);</span> <span class="op">&#125;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>  <span class="op">&#123;</span> tree_modify<span class="op">(</span>target<span class="op">,</span> middle <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> to<span class="op">,</span> current <span class="op">&lt;&lt;</span> <span class="dv">1</span> <span class="op">|</span> <span class="dv">1</span><span class="op">,</span> modifier<span class="op">);</span> <span class="op">&#125;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    push_up<span class="op">(</span>current<span class="op">);</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
+<p>主函数如下:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    cin <span class="op">&gt;&gt;</span> n<span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        cin <span class="op">&gt;&gt;</span> x <span class="op">&gt;&gt;</span> y<span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        edges<span class="op">[</span>x<span class="op">].</span>emplace_back<span class="op">(</span>y<span class="op">);</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        edges<span class="op">[</span>y<span class="op">].</span>emplace_back<span class="op">(</span>x<span class="op">);</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> n<span class="op">;</span> i<span class="op">++)</span>  <span class="op">&#123;</span> cin <span class="op">&gt;&gt;</span> weights<span class="op">[</span>i<span class="op">];</span> <span class="op">&#125;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    depths<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    fathers<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    get_sons<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    chaining<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    build<span class="op">(</span><span class="dv">1</span><span class="op">,</span> n<span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    cin <span class="op">&gt;&gt;</span> q<span class="op">;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>q <span class="op">--&gt;</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        cin <span class="op">&gt;&gt;</span> type <span class="op">&gt;&gt;</span> x <span class="op">&gt;&gt;</span> y<span class="op">;</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>type <span class="op">==</span> <span class="st">&quot;CHANGE&quot;</span><span class="op">)</span>  <span class="op">&#123;</span> tree_modify<span class="op">(</span>node_to_order<span class="op">[</span>x<span class="op">],</span> <span class="dv">1</span><span class="op">,</span> n<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> y<span class="op">);</span> <span class="op">&#125;</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>type <span class="op">==</span> <span class="st">&quot;QSUM&quot;</span><span class="op">)</span>  <span class="op">&#123;</span> cout <span class="op">&lt;&lt;</span> sum_query<span class="op">(</span>x<span class="op">,</span> y<span class="op">)</span> <span class="op">&lt;&lt;</span> endl<span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>  <span class="op">&#123;</span> cout <span class="op">&lt;&lt;</span> max_query<span class="op">(</span>x<span class="op">,</span> y<span class="op">)</span> <span class="op">&lt;&lt;</span> endl<span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
+<p>其余同模板</p>
+<h3 id="p3178-树上操作"><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3178">P3178 树上操作</a></h3>
+<p>树链剖分裸题, 要求树上单点加, 子树加, 查询树链和, 代码见模板</p>
+<h3 id="p2146-软件包管理器"><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2146">P2146 软件包管理器</a></h3>
+<p>树链剖分经典题, 不难发现这棵树的点权只有 0 或 1 , 代表未安装和已安装, 则安装操作抽象为将该节点到根的链上所有点修改为 1 , 卸载操作抽象为将以该节点为根的子树全部修改为 0</p>
+<p>主函数如下:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    cin <span class="op">&gt;&gt;</span> n<span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">2</span><span class="op">;</span> i <span class="op">&lt;=</span> n<span class="op">;</span> i<span class="op">++)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        cin <span class="op">&gt;&gt;</span> node<span class="op">;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        edges<span class="op">[</span>i<span class="op">].</span>emplace_back<span class="op">(</span>node <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        edges<span class="op">[</span>node <span class="op">+</span> <span class="dv">1</span><span class="op">].</span>emplace_back<span class="op">(</span>i<span class="op">);</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    depths<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    fathers<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    get_sons<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    chaining<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    cin <span class="op">&gt;&gt;</span> q<span class="op">;</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>q <span class="op">--&gt;</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        cin <span class="op">&gt;&gt;</span> type <span class="op">&gt;&gt;</span> node<span class="op">;</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        node<span class="op">++;</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>type <span class="op">==</span> <span class="st">&quot;install&quot;</span><span class="op">)</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#123;</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>            before <span class="op">=</span> tree<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>            chain_modify<span class="op">(</span><span class="dv">1</span><span class="op">,</span> node<span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>            after <span class="op">=</span> tree<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>            cout <span class="op">&lt;&lt;</span> abs<span class="op">(</span>after <span class="op">-</span> before<span class="op">)</span> <span class="op">&lt;&lt;</span> endl<span class="op">;</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#125;</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#123;</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>            before <span class="op">=</span> tree<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>            tree_modify<span class="op">(</span>node<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>            after <span class="op">=</span> tree<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>            cout <span class="op">&lt;&lt;</span> abs<span class="op">(</span>after <span class="op">-</span> before<span class="op">)</span> <span class="op">&lt;&lt;</span> endl<span class="op">;</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#125;</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
 
       </div>
     </div>
@@ -217,7 +315,20 @@
   
   <div class="vhr"></div>
   
-    <div class="post-nav-item-right"></div>
+    <a class="post-nav-item-right" href="/2022/12/%E7%BA%BF%E6%AE%B5%E6%A0%91/">
+      <div class="text-align">
+        <span class="text-small">下一篇</span>
+        <svg t="1670570876164"
+             class="icon"
+             viewBox="0 0 1024 1024"
+             transform="scale(-1,-1)"
+             width="16"
+             height="16">
+          <path d="M384 512L731.733333 202.666667c17.066667-14.933333 19.2-42.666667 4.266667-59.733334-14.933333-17.066667-42.666667-19.2-59.733333-4.266666l-384 341.333333c-10.666667 8.533333-14.933333 19.2-14.933334 32s4.266667 23.466667 14.933334 32l384 341.333333c8.533333 6.4 19.2 10.666667 27.733333 10.666667 12.8 0 23.466667-4.266667 32-14.933333 14.933333-17.066667 14.933333-44.8-4.266667-59.733334L384 512z" p-id="14596"/>
+        </svg>
+      </div>
+      树链剖分
+    </a>
   
 </div>
 
