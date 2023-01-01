@@ -86,42 +86,83 @@
           </div>
         
         <h2 id="前言">前言</h2>
-<p>树链剖分是我学会的第一个高级数据结构, 它的模板甚至都比我以前所写过的任何数据结构题更加复杂, 代码量也更大, 我意识到, 我的代码能力已经不会再拖累我学任何东西了, 从现在开始, 一切重点都在于思路和理解</p>
-<p>但也正是在此之后, 我逐渐发现我在这方面前进的太远了, 学会这种东西的纪念意义远比实际意义要大, 因为初中能参加的比赛根本考不到, 我常常发现数据结构的那些好题常常会因为其它部分卡住没法做, 这让人沮丧</p>
-<p>因此, 我重新拾起了写这些笔记的念头, 把艰深的概念以我自己的方式记录下来, 相信对于我来说, 它会比任何其他的维基和博客之类更加容易理解, 我将这部分知识封存, 在以后需要它的时候, 再迅速地重新捡起</p>
-<p>正如同海莲拉芙所说, "人类发明了文字, 懂得写成并印刷成书籍, 我们便不再徒劳无策地只受时间的摆弄宰割, 我们甚至可以局部地, 甚富意义地击败时间"</p>
+<p>树链剖分是我学会的第一个高级数据结构,
+它的模板甚至都比我以前所写过的任何数据结构题更加复杂, 代码量也更大,
+我意识到, 我的代码能力已经不会再拖累我学任何东西了, 从现在开始,
+一切重点都在于思路和理解</p>
+<p>但也正是在此之后, 我逐渐发现我在这方面前进的太远了,
+学会这种东西的纪念意义远比实际意义要大, 因为初中能参加的比赛根本考不到,
+我常常发现数据结构的那些好题常常会因为其它部分卡住没法做, 这让人沮丧</p>
+<p>因此, 我重新拾起了写这些笔记的念头,
+把艰深的概念以我自己的方式记录下来, 相信对于我来说,
+它会比任何其他的维基和博客之类更加容易理解, 我将这部分知识封存,
+在以后需要它的时候, 再迅速地重新捡起</p>
+<p>正如同海莲拉芙所说, "人类发明了文字, 懂得写成并印刷成书籍,
+我们便不再徒劳无策地只受时间的摆弄宰割, 我们甚至可以局部地,
+甚富意义地击败时间"</p>
 <h2 id="简介和一些理解">简介和一些理解</h2>
-<p>人们常说, 如果一个题不够难, 那就把它放到树上, 如果一个题太难, 那就把它放到链上</p>
-<p>树链剖分正是采用这样的思路, 通过 DFS 序将整棵树分为一些树链 ( 可以简单理解为树上的一条链 ) , 使得每个节点都包含且仅包含在一条树链上</p>
-<p>而如果我们将这些树链首尾相连, 树就变成了一条链, 即线性的序列, 这样我们就可以将它放到任何可以维护序列的数据结构上了</p>
-<p>树链剖分将对树链的正常操作 ( 树链加, 树链修改, 查询树链和等 ) 拆分成对转换后的链的一系列操作, 用数据结构实现, 树链剖分保证对于<span class="math inline">\(n\)</span>个节点的操作, 拆分出的操作至多为<span class="math inline">\(O(\log n)\)</span>个</p>
+<p>人们常说, 如果一个题不够难, 那就把它放到树上, 如果一个题太难,
+那就把它放到链上</p>
+<p>树链剖分正是采用这样的思路, 通过 DFS 序将整棵树分为一些树链 (
+可以简单理解为树上的一条链 ) ,
+使得每个节点都包含且仅包含在一条树链上</p>
+<p>而如果我们将这些树链首尾相连, 树就变成了一条链, 即线性的序列,
+这样我们就可以将它放到任何可以维护序列的数据结构上了</p>
+<p>树链剖分将对树链的正常操作 ( 树链加, 树链修改, 查询树链和等 )
+拆分成对转换后的链的一系列操作, 用数据结构实现, 树链剖分保证对于<span
+class="math inline">\(n\)</span>个节点的操作, 拆分出的操作至多为<span
+class="math inline">\(O(\log_2{n})\)</span>个</p>
 <h2 id="文字实现">文字实现</h2>
 <p>以下的概念是针对树链剖分中的重链剖分而言</p>
-<p>对于任一节点, 若用<span class="math inline">\(s_i\)</span>表示其第<span class="math inline">\(i\)</span>个子节点, 其共有<span class="math inline">\(n\)</span>个子节点, 则其重量<span class="math inline">\(w\)</span>递归定义为<span class="math inline">\(1+\sum_{i=1}^{n}w_{s_i}\)</span>, 实际意义为: 以该节点为根节点的子树的结点个数 ( 包括根 )</p>
-<p>对于任一非叶子节点, 我们定义它最重 ( 重量最大 ) 的子节点为重子节点, 剩余子节点均为轻子节点</p>
+<p>对于任一节点, 若用<span
+class="math inline">\(s_i\)</span>表示其第<span
+class="math inline">\(i\)</span>个子节点, 其共有<span
+class="math inline">\(n\)</span>个子节点, 则其重量<span
+class="math inline">\(w\)</span>递归定义为<span
+class="math inline">\(1+\sum_{i=1}^{n}w_{s_i}\)</span>, 实际意义为:
+以该节点为根节点的子树的结点个数 ( 包括根 )</p>
+<p>对于任一非叶子节点, 我们定义它最重 ( 重量最大 ) 的子节点为重子节点,
+剩余子节点均为轻子节点</p>
 <p>我们用如下的步骤进行树链剖分:</p>
 <ol type="1">
 <li>从根节点开始, 从它向它的重子节点引一条边</li>
 <li>从这个重子节点向这个重子节点的重子节点引一条边</li>
-<li>重复步骤 2 , 直到遇到叶子节点, 我们称从根节点到该叶子节点的树链为一条重链</li>
-<li>将根节点剩下的所有轻子节点分别作为根节点, 重复步骤 1 到 3 , 直到所有的节点均属于一条重链 ( 只有一个轻子节点的链也被称为重链 )</li>
+<li>重复步骤 2 , 直到遇到叶子节点,
+我们称从根节点到该叶子节点的树链为一条重链</li>
+<li>将根节点剩下的所有轻子节点分别作为根节点, 重复步骤 1 到 3 ,
+直到所有的节点均属于一条重链 ( 只有一个轻子节点的链也被称为重链 )</li>
 </ol>
 <p>一些额外的定义:</p>
 <ol type="1">
 <li>连接到一个重子节点的边称为重边, 一条重链是由重边组成的</li>
 <li>连接到一个轻子节点的边成为轻边, 树上不会出现连续的两条轻边</li>
 <li>一条重链中唯一的轻子节点 ( 即上文所述的根节点 ) 称为重链的顶</li>
-<li>树链剖分保证树上的任意一条包含<span class="math inline">\(n\)</span>个节点的路径至多划分为<span class="math inline">\(O(\log n)\)</span>条重链 ( 的一部分 )</li>
+<li>树链剖分保证树上的任意一条包含<span
+class="math inline">\(n\)</span>个节点的路径至多划分为<span
+class="math inline">\(O(\log_2{n})\)</span>条重链 ( 的一部分 )</li>
 </ol>
-<p>我们用树链剖分过程中访问每个节点的顺序对节点进行重新标号, 称为节点的 DFS 序 ( 或称为 DFN 序 ) , 我们按照 DFS 序将重链首尾相连, 并放入数据结构</p>
-<p>如下图, 若按照从左到右的层序对其进行标号, 则数据结构中所存储的节点标号将为 <code>1-&gt;3-&gt;6-&gt;11-&gt;16-&gt;18-&gt;19-&gt;12-&gt;7-&gt;13-&gt;17-&gt;2-&gt;5-&gt;10-&gt;15-&gt;9-&gt;4-&gt;8-&gt;13-&gt;14</code> :</p>
+<p>我们用树链剖分过程中访问每个节点的顺序对节点进行重新标号, 称为节点的
+DFS 序 ( 或称为 DFN 序 ) , 我们按照 DFS 序将重链首尾相连,
+并放入数据结构</p>
+<p>如下图, 若按照从左到右的层序对其进行标号,
+则数据结构中所存储的节点标号将为
+<code>1-&gt;3-&gt;6-&gt;11-&gt;16-&gt;18-&gt;19-&gt;12-&gt;7-&gt;13-&gt;17-&gt;2-&gt;5-&gt;10-&gt;15-&gt;9-&gt;4-&gt;8-&gt;13-&gt;14</code>
+:</p>
 <figure>
-<img src="https://oi-wiki.org/graph/images/hld.png" alt="树链剖分示意图" /><figcaption aria-hidden="true">树链剖分示意图</figcaption>
+<img src="https://oi-wiki.org/graph/images/hld.png"
+alt="树链剖分示意图" />
+<figcaption aria-hidden="true">树链剖分示意图</figcaption>
 </figure>
 <h2 id="代码实现">代码实现</h2>
-<p>类似于树形 DP , 我们首先要通过第一次 DFS 获取我们所需要的元信息, 如子树的大小 <code>sizes</code> , 节点的深度 <code>depths</code> , 节点的重子节点 <code>sons</code> 和节点的父亲节点 <code>fathers</code></p>
-<p>如果使用 <code>vector&lt;int&gt;</code> 数组实现邻接链表双向建边存储树, 并称其为 <code>edges</code> , 则具体实现如下:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> get_sons<span class="op">(</span><span class="dt">int</span> index<span class="op">,</span> <span class="dt">int</span> father<span class="op">)</span></span>
+<p>类似于树形 DP , 我们首先要通过第一次 DFS 获取我们所需要的元信息,
+如子树的大小 <code>sizes</code> , 节点的深度 <code>depths</code> ,
+节点的重子节点 <code>sons</code> 和节点的父亲节点
+<code>fathers</code></p>
+<p>如果使用 <code>vector&lt;int&gt;</code>
+数组实现邻接链表双向建边存储树, 并称其为 <code>edges</code> ,
+则具体实现如下:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> get_sons<span class="op">(</span><span class="dt">int</span> index<span class="op">,</span> <span class="dt">int</span> father<span class="op">)</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    sizes<span class="op">[</span>index<span class="op">]</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span>  <span class="co">// 子树大小至少为 1</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="kw">auto</span> son <span class="op">:</span> edges<span class="op">[</span>index<span class="op">])</span></span>
@@ -135,8 +176,13 @@
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>sizes<span class="op">[</span>son<span class="op">]</span> <span class="op">&gt;</span> sizes<span class="op">[</span>sons<span class="op">[</span>index<span class="op">]])</span>  <span class="op">&#123;</span> sons<span class="op">[</span>index<span class="op">]</span> <span class="op">=</span> son<span class="op">;</span> <span class="op">&#125;</span>  <span class="co">// 通用最值算法求出重子节点</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
-<p>然后我们要将整棵树划分为重链, 令 <code>node_to_order[i]</code> 表示节点 <code>i</code> 的 DFS 序, <code>order_to_node[i]</code> 表示 DFS 序 <code>i</code> 代表的节点, <code>tops[i]</code> 表示节点 <code>i</code> 所处的重链的顶, <code>counter</code> 为一个初始化为 0 的计数器, 则具体实现如下:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> chaining<span class="op">(</span><span class="dt">int</span> index<span class="op">,</span> <span class="dt">int</span> top<span class="op">)</span></span>
+<p>然后我们要将整棵树划分为重链, 令 <code>node_to_order[i]</code>
+表示节点 <code>i</code> 的 DFS 序, <code>order_to_node[i]</code> 表示
+DFS 序 <code>i</code> 代表的节点, <code>tops[i]</code> 表示节点
+<code>i</code> 所处的重链的顶, <code>counter</code> 为一个初始化为 0
+的计数器, 则具体实现如下:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> chaining<span class="op">(</span><span class="dt">int</span> index<span class="op">,</span> <span class="dt">int</span> top<span class="op">)</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    node_to_order<span class="op">[</span>index<span class="op">]</span> <span class="op">=</span> <span class="op">++</span>counter<span class="op">;</span>  <span class="co">// 记录 DFS 序</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    order_to_node<span class="op">[</span>counter<span class="op">]</span> <span class="op">=</span> index<span class="op">;</span></span>
@@ -151,13 +197,16 @@
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
 <p>如果我们使用线段树来维护, 参数表如下:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> push_up<span class="op">(</span><span class="dt">int</span> current<span class="op">);</span>  </span>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> push_up<span class="op">(</span><span class="dt">int</span> current<span class="op">);</span>  </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> push_down<span class="op">(</span><span class="dt">int</span> from<span class="op">,</span> <span class="dt">int</span> to<span class="op">,</span> <span class="dt">int</span> current<span class="op">);</span>  </span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> build<span class="op">(</span><span class="dt">int</span> from<span class="op">,</span> <span class="dt">int</span> to<span class="op">,</span> <span class="dt">int</span> current<span class="op">);</span>  </span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> query<span class="op">(</span><span class="dt">int</span> left<span class="op">,</span> <span class="dt">int</span> right<span class="op">,</span> <span class="dt">int</span> from<span class="op">,</span> <span class="dt">int</span> to<span class="op">,</span> <span class="dt">int</span> current<span class="op">);</span>  </span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> modify<span class="op">(</span><span class="dt">int</span> left<span class="op">,</span> <span class="dt">int</span> right<span class="op">,</span> <span class="dt">int</span> from<span class="op">,</span> <span class="dt">int</span> to<span class="op">,</span> <span class="dt">int</span> current<span class="op">,</span> <span class="dt">long</span> <span class="dt">long</span> modifier<span class="op">);</span></span></code></pre></div>
-<p>则我们可以写出支持查询树链和, 查询子树和, 树链修改和子树修改的代码:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> chain_query<span class="op">(</span><span class="dt">int</span> from<span class="op">,</span> <span class="dt">int</span> to<span class="op">)</span>  </span>
+<p>则我们可以写出支持查询树链和, 查询子树和,
+树链修改和子树修改的代码:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> chain_query<span class="op">(</span><span class="dt">int</span> from<span class="op">,</span> <span class="dt">int</span> to<span class="op">)</span>  </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span>  </span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> answer <span class="op">=</span> <span class="dv">0</span><span class="op">;</span>  </span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  </span>
@@ -203,13 +252,21 @@
 <span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
 <span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    modify<span class="op">(</span>node_to_order<span class="op">[</span>root<span class="op">],</span> node_to_order<span class="op">[</span>root<span class="op">]</span> <span class="op">+</span> sizes<span class="op">[</span>root<span class="op">]</span> <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> n<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> modifier<span class="op">);</span>  </span>
 <span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
-<p>切记, 用线段树 ( 或其它任何数据结构 ) 只能查询 / 修改在同一条链上的数据, 我们所作的一切操作都是为了将查询 / 修改的区间放在同一条链上</p>
-<p>加上取模操作, 此代码可以通过 <a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3384">P3384 树链剖分</a>这道模板题</p>
+<p>切记, 用线段树 ( 或其它任何数据结构 ) 只能查询 /
+修改在同一条链上的数据, 我们所作的一切操作都是为了将查询 /
+修改的区间放在同一条链上</p>
+<p>加上取模操作, 此代码可以通过 <a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3384">P3384
+树链剖分</a>这道模板题</p>
 <h2 id="其他例题">其他例题</h2>
-<h3 id="p2590-树的统计"><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2590">P2590 树的统计</a></h3>
-<p>树链剖分裸题, 要求树上单点修改, 查询树链和, 查询树链最大值, 那么可以开一棵节点是结构体的线段树, 维护区间和和区间最大值, 都支持单点修改即可</p>
+<h3 id="p2590-树的统计"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2590">P2590 树的统计</a></h3>
+<p>树链剖分裸题, 要求树上单点修改, 查询树链和, 查询树链最大值,
+那么可以开一棵节点是结构体的线段树, 维护区间和和区间最大值,
+都支持单点修改即可</p>
 <p>线段树单点修改部分代码:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> tree_modify<span class="op">(</span><span class="dt">int</span> target<span class="op">,</span> <span class="dt">int</span> from<span class="op">,</span> <span class="dt">int</span> to<span class="op">,</span> <span class="dt">int</span> current<span class="op">,</span> <span class="dt">int</span> modifier<span class="op">)</span>  </span>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> tree_modify<span class="op">(</span><span class="dt">int</span> target<span class="op">,</span> <span class="dt">int</span> from<span class="op">,</span> <span class="dt">int</span> to<span class="op">,</span> <span class="dt">int</span> current<span class="op">,</span> <span class="dt">int</span> modifier<span class="op">)</span>  </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>from <span class="op">==</span> to <span class="op">&amp;&amp;</span> from <span class="op">==</span> target<span class="op">)</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
@@ -227,7 +284,8 @@
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    push_up<span class="op">(</span>current<span class="op">);</span></span>
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
 <p>主函数如下:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    cin <span class="op">&gt;&gt;</span> n<span class="op">;</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span></span>
@@ -257,12 +315,18 @@
 <span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
 <span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
 <p>其余同模板</p>
-<h3 id="p3178-树上操作"><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3178">P3178 树上操作</a></h3>
+<h3 id="p3178-树上操作"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3178">P3178 树上操作</a></h3>
 <p>树链剖分裸题, 要求树上单点加, 子树加, 查询树链和, 代码见模板</p>
-<h3 id="p2146-软件包管理器"><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2146">P2146 软件包管理器</a></h3>
-<p>树链剖分经典题, 不难发现这棵树的点权只有 0 或 1 , 代表未安装和已安装, 则安装操作抽象为将该节点到根的链上所有点修改为 1 , 卸载操作抽象为将以该节点为根的子树全部修改为 0</p>
+<h3 id="p2146-软件包管理器"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2146">P2146
+软件包管理器</a></h3>
+<p>树链剖分经典题, 不难发现这棵树的点权只有 0 或 1 , 代表未安装和已安装,
+则安装操作抽象为将该节点到根的链上所有点修改为 1 ,
+卸载操作抽象为将以该节点为根的子树全部修改为 0</p>
 <p>主函数如下:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    cin <span class="op">&gt;&gt;</span> n<span class="op">;</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">2</span><span class="op">;</span> i <span class="op">&lt;=</span> n<span class="op">;</span> i<span class="op">++)</span></span>
@@ -310,24 +374,23 @@
     
     <div class="post-nav">
   
-    <div class="post-nav-item-left"></div>
-  
-  <div class="vhr"></div>
-  
-    <a class="post-nav-item-right" href="/2022/12/%E7%BA%BF%E6%AE%B5%E6%A0%91/">
+    <a class="post-nav-item-left" href="/2022/12/%E7%BA%BF%E6%AE%B5%E6%A0%91/">
       <div class="text-align">
-        <span class="text-small">下一篇</span>
         <svg t="1670570876164"
              class="icon"
              viewBox="0 0 1024 1024"
-             transform="scale(-1,-1)"
              width="16"
              height="16">
           <path d="M384 512L731.733333 202.666667c17.066667-14.933333 19.2-42.666667 4.266667-59.733334-14.933333-17.066667-42.666667-19.2-59.733333-4.266666l-384 341.333333c-10.666667 8.533333-14.933333 19.2-14.933334 32s4.266667 23.466667 14.933334 32l384 341.333333c8.533333 6.4 19.2 10.666667 27.733333 10.666667 12.8 0 23.466667-4.266667 32-14.933333 14.933333-17.066667 14.933333-44.8-4.266667-59.733334L384 512z" p-id="14596"/>
         </svg>
+        <span class="text-small">上一篇</span>
       </div>
-      线段树
+      <div>线段树</div>
     </a>
+  
+  <div class="vhr"></div>
+  
+    <div class="post-nav-item-right"></div>
   
 </div>
 

@@ -74,7 +74,7 @@
   
 
 
-          <span class="post-date">2022/12/25</span>
+          <span class="post-date">2022/12/26</span>
         </div>
       </div>
       <div class="post-content__body">
@@ -84,35 +84,163 @@
           </div>
         
         <h2 id="前言">前言</h2>
-<p>我对于数据结构的喜爱可能是源于线段树, 庞大的代码量, 理清思路后只要背诵模板就能轻易过题, 题目描述清晰易懂, 模块化, 可复用, 这些数据结构题独有的特点都吸引了我</p>
-<p>线段树其实很早之前我就把模板题过了, 但是半年多过去了, 做了几十道题目, 我还是不敢说自己完全掌握了线段树, 只是完成了树链剖分的笔记后, 觉得必须写一篇线段树来弥补基础数据结构的空缺, 于是就有了这个文章</p>
+<p>我对于数据结构的喜爱可能是源于线段树, 庞大的代码量,
+理清思路后只要背诵模板就能轻易过题, 题目描述清晰易懂, 模块化, 可复用,
+这些数据结构题独有的特点都吸引了我</p>
+<p>线段树其实很早之前我就把模板题过了, 但是半年多过去了, 做了几十道题目,
+我还是不敢说自己完全掌握了线段树, 只是完成了树链剖分的笔记后,
+觉得必须写一篇线段树来弥补基础数据结构的空缺, 于是就有了这个文章</p>
 <h2 id="简介和一些理解">简介和一些理解</h2>
-<p>线段树的单次修改 / 查询操作时间复杂度是<span class="math inline">\(O(\log n)\)</span>的, 这得益于它将数据二分并存储的特点 ( 也是因此线段树需要四倍于数据的空间的原因 )</p>
+<p>线段树的单次修改 / 查询操作时间复杂度是<span
+class="math inline">\(O(\log_2{n})\)</span>的,
+这得益于它将数据二分并存储的特点 ( 也是因此线段树需要 4
+倍于数据的空间的原因, 但严格来说, 其实是<span
+class="math inline">\(2^{\lceil\log_2{n}\rceil+1}-1\leqslant4n\)</span>
+)</p>
 <p>线段树认为单个数据也是一个区间, 这是区间类问题中常用的思想</p>
-<p>线段树能维护的数据必须线性可分, 即, 将序列分为左右两个子序列, 分别计算, 得到的结果可以通过某种方式合并成整个序列的结果</p>
-<p>结合上面两点, 线段树用类似归并排序的方式, 不断二分序列, 直到只剩一个元素, 然后再回溯, 在回溯过程中两两合并序列, 建成一棵分层的树, 每次执行操作就将目标区间分为若干线段树中区间的并, 这是线段树的核心思想</p>
+<p>线段树能维护的数据必须线性可分, 即, 将序列分为左右两个子序列,
+分别计算, 得到的结果可以通过某种方式合并成整个序列的结果</p>
+<p>结合上面两点, 线段树用类似归并排序的方式, 不断二分序列,
+直到只剩一个元素, 然后再回溯, 在回溯过程中两两合并序列,
+建成一棵分层的树, 每次执行操作就将目标区间分为若干线段树中区间的并 (
+形式化地, 令<span class="math inline">\(T\)</span>为目标区间, <span
+class="math inline">\(A\)</span>为划分出的区间, 则<span
+class="math inline">\(\bigcup_{i\in I}A_i=T\)</span>, 且<span
+class="math inline">\(\bigcap_{i\in I}A_i=\emptyset\)</span> ),
+这是线段树的核心思想</p>
 <h2 id="文字实现">文字实现</h2>
 <p>观察线段树的结构 ( 这个图应该重画了, 虽然清楚, 但实在是很丑 ) :</p>
 <figure>
-<img src="https://oi-wiki.org/ds/images/segt1.svg" alt="线段树示意图" /><figcaption aria-hidden="true">线段树示意图</figcaption>
+<img src="https://oi-wiki.org/ds/images/segt1.svg" alt="线段树示意图" />
+<figcaption aria-hidden="true">线段树示意图</figcaption>
 </figure>
 <p>我们很容易得到建树的步骤, 这个步骤是递归定义的:</p>
 <ol type="1">
-<li>如果当前区间只剩一个元素, 将维护的数据 ( 区间最值, 区间和 ) 赋值为序列中这一位置的数据</li>
-<li>否则取当前区间的中点, 将区间分为两部分, 对每一部分分别递归执行步骤 1 到 2</li>
-<li>两部分分别递归完成后, 将两部分的数据合成为当前区间的数据</li>
+<li>如果当前区间只剩一个元素, 将维护的数据 ( 区间最值, 区间和 )
+赋值为序列中这一位置的数据</li>
+<li>否则取当前区间的中点, 将区间分为两部分, 对每一部分分别递归执行步骤 1
+到 2</li>
+<li>两部分分别递归完成后, 将两部分的数据合并为当前区间的数据</li>
 </ol>
-<p>查询操作和修改操作是类似的, 步骤如下:</p>
+<p>区间查询操作步骤如下:</p>
 <ol type="1">
-<li>如果当前区间被包含在目标区间内, 那么我们可以判定, 这是在之前递归时分出来的部分, 直接查询或修改即可</li>
-<li>如果不是步骤 1 中的情况, 取当前区间的中点, 用二分搜索的方式, 将区间分为两部分, 接下来分为三种情况:
+<li>如果当前区间被包含在目标区间内, 那么我们可以判定,
+这是在之前递归时分出来的部分, 直接查询即可</li>
+<li>如果不是步骤 1 中的情况, 取当前区间的中点, 用二分搜索的方式,
+将区间分为两部分, 接下来分为三种情况:
 <ol type="1">
 <li>目标区间是当前区间的左半部分的一部分</li>
 <li>目标区间是当前区间的右半部分的一部分</li>
 <li>目标区间是当前区间的一部分 ( 即同时是左右两个部分的一部分 )</li>
 </ol></li>
-<li>按照这三种情况分别处理, 进行递归, 直到出现步骤 1 中的情况</li>
+<li>按照这三种情况 ( 事实上写成代码就只有两个分支了 ) 分别处理,
+进行递归, 直到出现步骤 1 中的情况</li>
 </ol>
+<p>当然, 线段树也支持单点查询和修改, 步骤如下:</p>
+<ol type="1">
+<li>如果当前区间长度为 1 ( 左右端点相等 ) ,
+二分搜索过程保证了该区间仅包含目标点, 直接查询或修改</li>
+<li>如果不是步骤 1 中的情况, 则类似区间查询和修改, 不断二分当前区间,
+此时没有上述的第三种情况, 其余相同, 进行递归即可</li>
+</ol>
+<p>线段树是一棵完全二叉树, 则其深度为<span
+class="math inline">\(\lceil\log_2{n}\rceil\)</span>,
+上述所有基本操作的时间复杂度都是二分搜索的<span
+class="math inline">\(O(\log_2{n})\)</span></p>
+<p>但是, 目前来看, 线段树的区间修改时间复杂度仍然不够优,
+如果每次都用单点代替区间修改, 那么时间复杂度为<span
+class="math inline">\(O(n\log_2{n})\)</span>, 不够快,
+而如果使用类似区间查询的方式, 我们只会修改到最表层的 (
+即将原序列最优分割成的 ) 一层节点, 如果查询这些节点的子节点,
+就会出现问题</p>
+<p>这时我们可以采用一种经典的技巧: 时间戳优化, 在线段树中往往也被称为:
+懒标记</p>
+<p>当修改操作发生时, 我们只修改最表层的节点,
+并在这些节点上记录修改的内容, 这些内容可以叠加 ( 如一次 +5 的修改和一次
+-5 的修改可以抵消, 一次 +5 的修改和一次 +3 的修改会变成一次 +8 的修改 )
+, 在查询这些区间子节点操作发生前, 我们就让修改停留在这里,
+因为没有影响</p>
+<p>当查询操作发生时, 在向下递归的过程中, 如果遇到有懒标记的节点,
+那么它的子节点一定还没有真正进行修改, 那我们只需要对其进行修改即可</p>
+<p>同样地, 如果某个还未真正修改的节点是某次修改的最表层节点,
+我们也要对其进行修改</p>
+<p>因此考虑到对未真正修改节点进行修改的操作可以独立出来作为一个操作,
+一般称作懒标记下传</p>
+<h2 id="代码实现">代码实现</h2>
+<p>以下均以支持查询区间和, 区间加为例</p>
+<p>首先实现把子节点数据合并为父亲节点数据的函数, 以及懒标记下传的函数,
+这两个函数一般被视为对称 ( 相反? ) 的函数,
+定义<code>tree</code>表示区间和, <code>tag</code>表示懒标记:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> push_up<span class="op">(</span><span class="dt">int</span> current<span class="op">)</span>  <span class="co">// 合并数据</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    sum<span class="op">[</span>current<span class="op">]</span> <span class="op">=</span> sum<span class="op">[</span>current <span class="op">&lt;&lt;</span> <span class="dv">1</span><span class="op">]</span> <span class="op">+</span> sum<span class="op">[</span>current <span class="op">&lt;&lt;</span> <span class="dv">1</span> <span class="op">|</span> <span class="dv">1</span><span class="op">];</span>  <span class="co">// 因为右移后最后一位必定是 0 , 故或 1 相当于加 1</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> push_down<span class="op">(</span><span class="dt">int</span> from<span class="op">,</span> <span class="dt">int</span> to<span class="op">,</span> <span class="dt">int</span> current<span class="op">)</span>  <span class="co">// 下传懒标记</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>tag<span class="op">[</span>current<span class="op">]</span> <span class="op">&amp;&amp;</span> from <span class="op">!=</span> to<span class="op">)</span>  <span class="co">// 叶子节点和无懒标记的节点不需要下传</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        tree<span class="op">[</span>current <span class="op">&lt;&lt;</span> <span class="dv">1</span><span class="op">]</span> <span class="op">+=</span> tag<span class="op">[</span>current<span class="op">]</span> <span class="op">*</span> <span class="op">(</span>middle <span class="op">-</span> from <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        tree<span class="op">[</span>current <span class="op">&lt;&lt;</span> <span class="dv">1</span> <span class="op">|</span> <span class="dv">1</span><span class="op">]</span> <span class="op">+=</span> tag<span class="op">[</span>current<span class="op">]</span> <span class="op">*</span> <span class="op">(</span>to <span class="op">-</span> middle<span class="op">);</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        tag<span class="op">[</span>current <span class="op">&lt;&lt;</span> <span class="dv">1</span><span class="op">]</span> <span class="op">+=</span> tag<span class="op">[</span>current<span class="op">];</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        tag<span class="op">[</span>current <span class="op">&lt;&lt;</span> <span class="dv">1</span> <span class="op">|</span> <span class="dv">1</span><span class="op">]</span> <span class="op">+=</span> tag<span class="op">[</span>current<span class="op">];</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        tag<span class="op">[</span>current<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
+<p>然后我们可以实现建树, 令<code>a</code>表示原序列:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> build<span class="op">(</span><span class="dt">int</span> from<span class="op">,</span> <span class="dt">int</span> to<span class="op">,</span> <span class="dt">int</span> current<span class="op">)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>from <span class="op">==</span> to<span class="op">)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        tree<span class="op">[</span>current<span class="op">]</span> <span class="op">=</span> a<span class="op">[</span>from<span class="op">];</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> middle <span class="op">=</span> <span class="op">((</span>to <span class="op">-</span> from<span class="op">)</span> <span class="op">&gt;&gt;</span> <span class="dv">1</span><span class="op">)</span> <span class="op">+</span> from<span class="op">;</span>  <span class="co">// 防止相加时整型溢出</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    build<span class="op">(</span>from<span class="op">,</span> middle<span class="op">,</span> current <span class="op">&lt;&lt;</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    build<span class="op">(</span>middle <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> to<span class="op">,</span> current <span class="op">&lt;&lt;</span> <span class="dv">1</span> <span class="op">|</span> <span class="dv">1</span><span class="op">);</span>  <span class="co">// 防止区间重叠</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    push_up<span class="op">(</span>current<span class="op">);</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
+<p>区间查询和区间修改如下:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> query<span class="op">(</span><span class="dt">int</span> left<span class="op">,</span> <span class="dt">int</span> right<span class="op">,</span> <span class="dt">int</span> from<span class="op">,</span> <span class="dt">int</span> to<span class="op">,</span> <span class="dt">int</span> current<span class="op">)</span>  <span class="co">// 正式比赛时一定把返回值开成 long long</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>left <span class="op">&lt;=</span> from <span class="op">&amp;&amp;</span> right <span class="op">&gt;=</span> to<span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">return</span> tree<span class="op">[</span>current<span class="op">];</span> <span class="op">&#125;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> middle <span class="op">=</span> <span class="op">((</span>to <span class="op">-</span> from<span class="op">)</span> <span class="op">&gt;&gt;</span> <span class="dv">1</span><span class="op">)</span> <span class="op">+</span> from<span class="op">,</span> answer <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    push_down<span class="op">(</span>from<span class="op">,</span> to<span class="op">,</span> current<span class="op">);</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>left <span class="op">&lt;=</span> middle<span class="op">)</span>  <span class="op">&#123;</span> answer <span class="op">+=</span> query<span class="op">(</span>left<span class="op">,</span> right<span class="op">,</span> from<span class="op">,</span> middle<span class="op">,</span> current <span class="op">&lt;&lt;</span> <span class="dv">1</span><span class="op">);</span> <span class="op">&#125;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>middle <span class="op">&lt;</span> right<span class="op">)</span>  <span class="op">&#123;</span> answer <span class="op">+=</span> query<span class="op">(</span>left<span class="op">,</span> right<span class="op">,</span> middle <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> to<span class="op">,</span> current <span class="op">&lt;&lt;</span> <span class="dv">1</span> <span class="op">|</span> <span class="dv">1</span><span class="op">);</span> <span class="op">&#125;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> answer<span class="op">;</span> </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> modify<span class="op">(</span><span class="dt">int</span> left<span class="op">,</span> <span class="dt">int</span> right<span class="op">,</span> <span class="dt">int</span> from<span class="op">,</span> <span class="dt">int</span> to<span class="op">,</span> <span class="dt">int</span> current<span class="op">,</span> <span class="dt">int</span> modifier<span class="op">)</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>left <span class="op">&lt;=</span> from <span class="op">&amp;&amp;</span> right <span class="op">&gt;=</span> to<span class="op">)</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        tree<span class="op">[</span>current<span class="op">]</span> <span class="op">+=</span> <span class="op">(</span>to <span class="op">-</span> from <span class="op">+</span> <span class="dv">1</span><span class="op">)</span> <span class="op">*</span> modifier<span class="op">;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        tag<span class="op">[</span>current<span class="op">]</span> <span class="op">+=</span> modifier<span class="op">;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">;</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> middle <span class="op">=</span> <span class="op">((</span>to <span class="op">-</span> from<span class="op">)</span> <span class="op">&gt;&gt;</span> <span class="dv">1</span><span class="op">)</span> <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    push_down<span class="op">(</span>from<span class="op">,</span> to<span class="op">,</span> current<span class="op">);</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>left <span class="op">&lt;=</span> middle<span class="op">)</span>  <span class="op">&#123;</span> modify<span class="op">(</span>left<span class="op">,</span> right<span class="op">,</span> from<span class="op">,</span> middle<span class="op">,</span> current <span class="op">&lt;&lt;</span> <span class="dv">1</span><span class="op">,</span> modifier<span class="op">);</span> <span class="op">&#125;</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>middle <span class="op">&lt;</span> right<span class="op">)</span>  <span class="op">&#123;</span> modify<span class="op">(</span>left<span class="op">,</span> right<span class="op">,</span> middle <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> to<span class="op">,</span> current <span class="op">&lt;&lt;</span> <span class="dv">1</span> <span class="op">|</span> <span class="dv">1</span><span class="op">,</span> modifier<span class="op">);</span> <span class="op">&#125;</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    push_up<span class="op">(</span>current<span class="op">);</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
 
       </div>
     </div>
@@ -121,7 +249,7 @@
     
     <div class="post-nav">
   
-    <a class="post-nav-item-left" href="/2022/12/%E6%A0%91%E9%93%BE%E5%89%96%E5%88%86/">
+    <a class="post-nav-item-left" href="/2023/01/%E4%BB%8E%E5%AF%BF%E5%8F%B8%E6%99%9A%E5%AE%B4%E5%88%B0%E7%8A%B6%E5%8E%8B-DP/">
       <div class="text-align">
         <svg t="1670570876164"
              class="icon"
@@ -132,12 +260,25 @@
         </svg>
         <span class="text-small">上一篇</span>
       </div>
-      <div>树链剖分</div>
+      <div>从寿司晚宴到状压 DP</div>
     </a>
   
   <div class="vhr"></div>
   
-    <div class="post-nav-item-right"></div>
+    <a class="post-nav-item-right" href="/2022/12/%E6%A0%91%E9%93%BE%E5%89%96%E5%88%86/">
+      <div class="text-align">
+        <span class="text-small">下一篇</span>
+        <svg t="1670570876164"
+             class="icon"
+             viewBox="0 0 1024 1024"
+             transform="scale(-1,-1)"
+             width="16"
+             height="16">
+          <path d="M384 512L731.733333 202.666667c17.066667-14.933333 19.2-42.666667 4.266667-59.733334-14.933333-17.066667-42.666667-19.2-59.733333-4.266666l-384 341.333333c-10.666667 8.533333-14.933333 19.2-14.933334 32s4.266667 23.466667 14.933334 32l384 341.333333c8.533333 6.4 19.2 10.666667 27.733333 10.666667 12.8 0 23.466667-4.266667 32-14.933333 14.933333-17.066667 14.933333-44.8-4.266667-59.733334L384 512z" p-id="14596"/>
+        </svg>
+      </div>
+      树链剖分
+    </a>
   
 </div>
 
