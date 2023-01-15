@@ -85,7 +85,131 @@
             
           </div>
         
-        
+        <h2 id="前言">前言</h2>
+<p>状态压缩动态规划, 简称状压 DP , 是一种非常优雅的算法, 一般来说,
+思维难度和实现难度都不高, 概念也比较容易理解, 同时非常有特点, 易于辨认,
+洛谷蓝题以下的状压 DP 都相当好写</p>
+<p>但是状压 DP 的定义不是我想探究的, 事实上,
+我试图通过一道相当巧妙的题目, 即 <a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2150">P2150 寿司晚宴</a>,
+来重新叙述一道困难的状压 DP 从无到有的完整思考过程</p>
+<h2 id="引入">引入</h2>
+<p>首先读题, 并对题面进行形式化, 形式化题面如下:</p>
+<p>维护两个集合<span class="math inline">\(G\)</span>和<span
+class="math inline">\(W\)</span>, 使得:</p>
+<ol type="1">
+<li><span class="math inline">\(\forall x\in G\)</span>, <span
+class="math inline">\(x\notin W\)</span></li>
+<li><span class="math inline">\(\forall x\in G\cup W\)</span>, <span
+class="math inline">\(x\in[2,\ n]\)</span></li>
+<li><span class="math inline">\(\forall x\in G\)</span>, <span
+class="math inline">\(\forall y\in W\)</span>, <span
+class="math inline">\(x\perp y\)</span></li>
+</ol>
+<p>请你求出所有可能的方案数对<span
+class="math inline">\(p\)</span>取模的结果</p>
+<p>从题面中可以得到, 本题需要维护集合, 这是状压 DP 的典型特征之一</p>
+<p>然后观察数据范围, <span class="math inline">\(n\)</span>非常小,
+但是没有小到可以直接状态压缩的程度 ( <span
+class="math inline">\(2^{500}\)</span>是不可能开下的 )</p>
+<p>那么此时, 我们再次阅读题面, 找出题面中最特殊的部分, 对于此题,
+应该是形式化题面的第三条, 互质</p>
+<p>互质说明两个数没有任何相同的因数, 注意到, 因数时常表示为集合,
+事实上我们仍在维护集合, 那么考虑对于因数集合进行状态压缩:</p>
+<p>对于任意正整数<span class="math inline">\(x\)</span>,
+显然不可能同时存在两个大于<span
+class="math inline">\(\sqrt{x}\)</span>的质因数, 注意到<span
+class="math inline">\(22\lt\sqrt{500}\lt23\)</span>,
+这个数据范围显然可以状态压缩, 剩下的那个大质因数单独处理即可</p>
+<p>综上, 我们确定了此题可以进行状压 DP, 依据是: 维护集合,
+数据范围可压缩</p>
+<h2 id="文字实现">文字实现</h2>
+<p><strong>阅读以下文字时, 请时刻确保你理解: 我们虽然选择的是数,
+但维护的是小质因数集; 集合<span class="math inline">\(G\)</span>和<span
+class="math inline">\(W\)</span>维护的是数,
+而不是小质因数集</strong></p>
+<p>我们知道, 小于等于 22 的数中, 只有 8 个质数, 用一个二进制串表示,
+如果这一部分互质, 我们称其为弱互质</p>
+<p>多出来的这一个大质因数有很多种可能 ( 也可能没有 ) ,
+如果两个状态是弱互质的, 且它们的大质因数不相同, 那么这两个状态是互质的,
+<strong>如果两个数的大质因数相同,
+那么无论如何这两个状态都不可能互质</strong></p>
+<p>因此我们需要采用类似离散化去重的方式, 将大质因数排序,
+这样大质因数就分为了若干段, 每段内是相等的, 这样, 可以分类讨论,
+即该大质因数属于集合<span
+class="math inline">\(G\)</span>和该大质因数属于集合<span
+class="math inline">\(W\)</span>, 显然不可能同时属于两个集合</p>
+<p>分类讨论决定了我们需要两个 DP 数组, 但是, 每段的大质因数不同, 因此该
+DP 数组实际上是局部的, 即只生效于此段内部, 这是显然的,
+那么我们还需要一个全局的数组来存储最终的答案</p>
+<p>定义<span class="math inline">\(g_{s_1,\ s_2}\)</span>表示<span
+class="math inline">\(G\)</span>集合此时所有被选的数的小质因数集的并 (
+的二进制表示, 下同 ) 是<span class="math inline">\(s_1\)</span>,
+不被选的并是<span class="math inline">\(s_2\)</span>,
+在此大质因数段此种情况下的方案数</p>
+<p>定义<span class="math inline">\(w_{s_1,\ s_2}\)</span>表示<span
+class="math inline">\(W\)</span>集合此时所有被选的数的小质因数集的并是<span
+class="math inline">\(s_2\)</span>, 不被选的并是<span
+class="math inline">\(s_1\)</span>, 在此大质因数段此种情况下的方案数</p>
+<p>注意, 以上两个数组是互斥的, 再次强调:
+<strong>如果两个数的大质因数相同,
+那么无论如何这两个状态都不可能互质</strong> ( 但在一种情况下不互斥,
+请读者在阅读到下方答案前尝试自己思考是何时 )</p>
+<p>定义<span class="math inline">\(dp_{s_1,\ s_2}\)</span>表示<span
+class="math inline">\(G\)</span>集合所有被选的数的小质因数集的并是<span
+class="math inline">\(s_1\)</span>, <span
+class="math inline">\(W\)</span>集合所有被选的数的小质因数集的并是<span
+class="math inline">\(s_2\)</span>, 在此种情况下的方案数</p>
+<p>问题来了, 如何把两个局部数组的值合并到全局数组呢?</p>
+<p>首先, 从两个局部数组的角度来说,
+之前的决策和结果对它们是封闭的且有影响的, 所以, 为了提供足够的信息,
+我们需要先 "告诉" 它们这些东西, 即将全局数组复制到两个数组中</p>
+<p>我们不能直接加上这两个数组的值, 因为有重复的贡献</p>
+<p>我们可以考虑赋值, 但这样仍有一部分重复贡献, 不过这是可以消除的:
+设若该段内没有任何数被选择, 那么两个数组都含有此种情况, 此时不互斥;
+根据定义, 全局数组此时的值就是该段内没有任何数被选择的方案数 ( 为什么?
+因为它相当于还未进入此段 )</p>
+<p>综上, 合并所用的状态转移方程如下:</p>
+<p><span class="math display">\[
+dp_{s_1,\ s_2}=g_{s_1,\ s_2}+w_{s_1,\ s_2}-dp_{s_1,\ s_2}
+\]</span></p>
+<p>这部分极难理解, 理解完成后剩余部分相当轻松愉快,
+如还未理解可结合下面示意图理解 ( <span
+class="math inline">\(p_i\)</span>代表第<span
+class="math inline">\(i\)</span>个大质因数 ):</p>
+<figure>
+<img src="https://cdn.luogu.com.cn/upload/image_hosting/h0iqe007.png"
+alt="示意图" />
+<figcaption aria-hidden="true">示意图</figcaption>
+</figure>
+<p>总的步骤如下:</p>
+<ol type="1">
+<li>预处理<span class="math inline">\([2,\
+n]\)</span>中的所有整数的小质因数二进制表示和大质因数,
+并根据大质因数排序</li>
+<li>遍历所有的大质因数段, 注意没有大质因数的也算一段</li>
+<li>对于每一段, 按如下操作:
+<ol type="1">
+<li>清空局部 DP 数组</li>
+<li>遍历所有可能的<span class="math inline">\(s_1\)</span>和<span
+class="math inline">\(s_2\)</span>, 进行状态转移, 令<span
+class="math inline">\(\operatorname{fac}(i)\)</span>表示<span
+class="math inline">\(i\)</span>的质因数集, 状态转移方程如下: <span
+class="math display">\[
+\begin{align*}
+g_{s_1\cup\operatorname{fac}(i),\
+s_2}&amp;=g_{s_1\cup\operatorname{fac}(i),\ s_2}+g_{s_1,\
+s_2}\quad&amp;\text{if}\ \operatorname{fac}(i)\cap s_2=\emptyset\\
+w_{s_1,\ s_2\cup\operatorname{fac}(i)}&amp;=w_{s_1,\
+s_2\cup\operatorname{fac}(i)}+w_{s_1,\ s_2}\quad&amp;\text{if}\
+\operatorname{fac}(i)\cap s_1=\emptyset
+\end{align*}
+\]</span></li>
+</ol></li>
+<li>合并状态</li>
+</ol>
+<h2 id="但什么是状压-dp">但什么是状压 DP</h2>
+<h2 id="代码实现">代码实现</h2>
 
       </div>
     </div>
