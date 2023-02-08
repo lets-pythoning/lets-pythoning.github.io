@@ -87,8 +87,9 @@
 <p>这里是某人的做题计划 - 动态规划专题题单的做题记录,
 含有我对这些题目的原创思路, 因为做这些题时没有查看题解,
 这里有些思路可能不完整或不正确, 但通过后一定会修正</p>
-<h2 id="最长括号匹配"><a
-target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1944">最长括号匹配</a></h2>
+<h2 id="p1944-最长括号匹配"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1944">P1944
+最长括号匹配</a></h2>
 <p>思路: 在此题中, 我们存储的数据有两个, 即子串 ( 指括号匹配子串, 下同 )
 的长度, 子串的左端点或右端点, 这样我们才能确定唯一的一个子串,
 也方便输出; 同时观察数据范围也可知算法时间复杂度必须为<span
@@ -121,8 +122,9 @@ dp_i=\left\{
 \right.
 \]</span></p>
 <p>边界条件: 全部初始化为 0 即可</p>
-<h2 id="花店橱窗布置"><a
-target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1854">花店橱窗布置</a></h2>
+<h2 id="p1854-花店橱窗布置"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1854">P1854
+花店橱窗布置</a></h2>
 <p>思路: 在题目所给的表格中进行模拟, 容易发现类似于在表上取数,
 可以从左上方走来 ( 插花了, 或者理解为选当前数 ), 也可以从左边走来 (
 不插花, 不选当前数 ) , 数据范围也允许二维 DP</p>
@@ -138,6 +140,60 @@ dp{i,\ j}=\max(dp_{i-1,\ j-1}+a_{i,\ j},\ dp_{i, j-1})
 class="math inline">\(i\gt j\)</span>, 直接跳过</p>
 <p>边界条件: 因为存在负值, 所以初始化为负无穷, 只有<span
 class="math inline">\(j=0\)</span>时为 0</p>
+<h2 id="p4310-绝世好题"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P4310">P4310 绝世好题</a></h2>
+<p>思路一: 时间复杂度为<span
+class="math inline">\(O(n^2)\)</span>的写法是比较好想的, 设原序列为<span
+class="math inline">\(a\)</span>, 定义<span
+class="math inline">\(dp_i\)</span>表示以<span
+class="math inline">\(a_i\)</span>结尾的子序列的最大长度,
+因为是子序列而非子串, 所以每次暴力枚举<span
+class="math inline">\(a_i\)</span>接在哪里, 进行转移即可</p>
+<p>思路二: 由于数据范围显然不允许思路一中的算法通过,
+考虑与运算的特殊性质, 若两个数的二进制表示中有任意一位都为 1 , 则结果非
+0 , 则我们可以想到另一种状态定义, 不记录每个数对应的子序列的最大长度,
+而是记录每一个二进制位, 对于所有这一二进制位为 1 的数,
+以这些数为子序列的结尾所取得的最大长度</p>
+<p>状态定义: 如思路二所言, 定义<span
+class="math inline">\(dp_i\)</span>为所有满足<span
+class="math inline">\(x\in a\)</span>且<span
+class="math inline">\(x\&amp;2^i=1\)</span>的<span
+class="math inline">\(x\)</span>为结尾的子序列的最大长度</p>
+<p>状态转移:</p>
+<p>此状态看似不好转移, 但其实还算容易想, 考虑对于任意一个数,
+它可以接到任何一个与它有至少一个相同二进制位的数上, 并作为结尾继续转移,
+因此想到将对原数组的遍历作为外层循环 ( 当前遍历到的数表示为<span
+class="math inline">\(a_i\)</span> ) , 同时对于<span
+class="math inline">\(\forall j\in[0,\
+\lceil\log_2n\rceil]\)</span>有</p>
+<p><span class="math display">\[
+dp_j=\max(dp_j,\ \max_{k\in[0,\ \lceil\log_2n\rceil],\
+a_i\&amp;2^k=1}\{dp_k\}+1)\quad\text{if}\ a_i\&amp;2^j=1
+\]</span></p>
+<p>每次先计算其中第二个最大值, 再计算第一个, 即可完成转移</p>
+<p>边界条件: 最大值最小为 1 , 初始设为 1 即可</p>
+<h2 id="cf41d-pawn"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/CF41D">CF41D Pawn</a></h2>
+<p>思路: 考虑弱化的版本, 若没有倍数限制, 显然可以使用二维 DP 解决,
+那么若有限制, 只需再加一维记录这个限制即可; 具体来说,
+加上一维代表当前取到的豌豆数, 将 DP 变成可达性 DP , 豌豆数最大不超过
+1000 , 因此可以开下</p>
+<p>状态定义: 定义<span class="math inline">\(dp_{i,\ j,\
+k}\)</span>为当前在点<span class="math inline">\((i,\ j)\)</span>,
+能否取到<span class="math inline">\(k\)</span>个豌豆</p>
+<p>状态转移: 设<span class="math inline">\(a\)</span>代表豌豆数的矩阵,
+比较容易得到</p>
+<p><span class="math display">\[
+dp_{i,\ j,\ k}=dp_{i+1,\ j-1,\ k-a_{i,\ j}}|dp_{i+1,\ j+1,\ k-a_{i,\ j}}
+\]</span></p>
+<p>边界条件: 注意当<span class="math inline">\(j-1\)</span>时要求<span
+class="math inline">\(j&gt;1\)</span>且当<span
+class="math inline">\(j+1\)</span>时要求<span
+class="math inline">\(j&lt;m\)</span>, <span
+class="math inline">\(i\)</span>要倒序遍历, 遍历时要求<span
+class="math inline">\(k\geqslant a_{i,\ j}\)</span>, 初始值将<span
+class="math inline">\(n+1\)</span>这一行全部赋值为 <code>true</code>
+即可</p>
 
       </div>
     </div>

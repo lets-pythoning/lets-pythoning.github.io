@@ -209,7 +209,100 @@ s_2\cup\operatorname{fac}(i)}+w_{s_1,\ s_2}\quad&amp;\text{if}\
 <li>合并状态</li>
 </ol>
 <h2 id="但什么是状压-dp">但什么是状压 DP</h2>
+<p>如果你不知道什么是状压 DP , 那么考虑按照线性 DP 的思路来定义状态:</p>
+<ol type="1">
+<li>首先, 你不能存两人各选了多少, 因为这样显然无法转移</li>
+<li>然后, 你不能存两人各自最后选了什么, 因为前面的也要考虑</li>
+<li>那么, 最后你会发现, 你需要存两人各自选了什么, 但是这样 DP
+的维数不确定</li>
+<li>于是想到使用标记数组标记, 对于两个人而言, 哪些选过, 哪些没选过</li>
+<li>然而标记数组无法塞进 DP 数组的维度中, 因此我们可以想到用
+<code>map</code> 存储, 这是一种解决方案</li>
+<li>但主流的解决方案是, 将标记数组视作一个二进制串, 将二进制串视为整数,
+塞进 DP 数组中</li>
+</ol>
+<p>这就是状压 DP</p>
 <h2 id="代码实现">代码实现</h2>
+<p>代码比较难写, 首先写出取模的代码, 如下:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ll modding<span class="op">(</span>ll num<span class="op">)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> num <span class="op">&lt;</span> mod <span class="op">?</span> num <span class="op">:</span> num <span class="op">-</span> mod<span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
+<p>不要使用常规取模, 因为在状态转移过程中可能存在负数</p>
+<p>然后是预处理小质因数集和大质因数段, 代码如下:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="at">const</span> vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> primes <span class="op">=</span> <span class="op">&#123;</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">7</span><span class="op">,</span> <span class="dv">11</span><span class="op">,</span> <span class="dv">13</span><span class="op">,</span> <span class="dv">17</span><span class="op">,</span> <span class="dv">19</span> <span class="op">&#125;;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>pair<span class="op">&lt;</span><span class="dt">int</span><span class="op">,</span> <span class="dt">int</span><span class="op">&gt;</span> mark<span class="op">(</span><span class="dt">int</span> num<span class="op">)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> marker <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> index <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="kw">auto</span> prime <span class="op">:</span> primes<span class="op">)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(!(</span>num <span class="op">%</span> prime<span class="op">))</span>  <span class="co">// 质因数分解</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#123;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            num <span class="op">/=</span> prime<span class="op">;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            marker <span class="op">|=</span> <span class="dv">1</span> <span class="op">&lt;&lt;</span> index<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#125;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        index<span class="op">++;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">&#123;</span> num<span class="op">,</span> marker <span class="op">&#125;;</span>  <span class="co">// 质因数分解剩下的就是大质因数</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
+<p>在主函数内加入:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">2</span><span class="op">;</span> i <span class="op">&lt;=</span> n<span class="op">;</span> i<span class="op">++)</span>  <span class="op">&#123;</span> markers<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> mark<span class="op">(</span>i<span class="op">);</span> <span class="op">&#125;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>sort<span class="op">(</span>markers <span class="op">+</span> <span class="dv">2</span><span class="op">,</span> markers <span class="op">+</span> n <span class="op">+</span> <span class="dv">1</span><span class="op">);</span>  <span class="co">// 按照大质因数排序</span></span></code></pre></div>
+<p>接下来是 DP 部分:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">2</span><span class="op">;</span> i <span class="op">&lt;=</span> n<span class="op">;</span> i<span class="op">++)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>markers<span class="op">[</span>i<span class="op">].</span>first <span class="op">==</span> <span class="dv">1</span> <span class="op">||</span> markers<span class="op">[</span>i<span class="op">].</span>first <span class="op">!=</span> markers<span class="op">[</span>i <span class="op">-</span> <span class="dv">1</span><span class="op">].</span>first<span class="op">)</span>  <span class="co">// 判断是否进入了一个新段</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> pattern1 <span class="op">=</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> <span class="dv">8</span><span class="op">)</span> <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> pattern1 <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">;</span> pattern1<span class="op">--)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#123;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> pattern2 <span class="op">=</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> <span class="dv">8</span><span class="op">)</span> <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> pattern2 <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">;</span> pattern2<span class="op">--)</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>            <span class="op">&#123;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>pattern1 <span class="op">&amp;</span> pattern2<span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">continue</span><span class="op">;</span> <span class="op">&#125;</span>  <span class="co">// 两个数组互斥</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                dp<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">]</span> <span class="op">=</span> modding<span class="op">(</span>mod <span class="op">-</span> dp<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">]</span> <span class="op">+</span> modding<span class="op">(</span>dp1<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">]</span> <span class="op">+</span> dp2<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">]));</span>  <span class="co">// 合并到全局数组</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                <span class="co">// 在一个循环中同时完成合并和复制</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>                dp1<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">]</span> <span class="op">=</span> dp<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">];</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>                dp2<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">]</span> <span class="op">=</span> dp<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">];</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>            <span class="op">&#125;</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#125;</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> marker <span class="op">=</span> markers<span class="op">[</span>i<span class="op">].</span>second<span class="op">;</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> pattern1 <span class="op">=</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> <span class="dv">8</span><span class="op">)</span> <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> pattern1 <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">;</span> pattern1<span class="op">--)</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> pattern2 <span class="op">=</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> <span class="dv">8</span><span class="op">)</span> <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> pattern2 <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">;</span> pattern2<span class="op">--)</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#123;</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>pattern1 <span class="op">&amp;</span> pattern2<span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">continue</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(!(</span>pattern2 <span class="op">&amp;</span> marker<span class="op">))</span>  <span class="op">&#123;</span> dp1<span class="op">[</span>pattern1 <span class="op">|</span> marker<span class="op">][</span>pattern2<span class="op">]</span> <span class="op">=</span> modding<span class="op">(</span>dp1<span class="op">[</span>pattern1 <span class="op">|</span> marker<span class="op">][</span>pattern2<span class="op">]</span> <span class="op">+</span> dp1<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">]);</span> <span class="op">&#125;</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(!(</span>pattern1 <span class="op">&amp;</span> marker<span class="op">))</span>  <span class="op">&#123;</span> dp2<span class="op">[</span>pattern1<span class="op">][</span>pattern2 <span class="op">|</span> marker<span class="op">]</span> <span class="op">=</span> modding<span class="op">(</span>dp2<span class="op">[</span>pattern1<span class="op">][</span>pattern2 <span class="op">|</span> marker<span class="op">]</span> <span class="op">+</span> dp2<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">]);</span> <span class="op">&#125;</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#125;</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> pattern1 <span class="op">=</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> <span class="dv">8</span><span class="op">)</span> <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> pattern1 <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">;</span> pattern1<span class="op">--)</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> pattern2 <span class="op">=</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> <span class="dv">8</span><span class="op">)</span> <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> pattern2 <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">;</span> pattern2<span class="op">--)</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>pattern1 <span class="op">&amp;</span> pattern2<span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">continue</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>        dp<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">]</span> <span class="op">=</span> modding<span class="op">(</span>mod <span class="op">-</span> dp<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">]</span> <span class="op">+</span> modding<span class="op">(</span>dp1<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">]</span> <span class="op">+</span> dp2<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">]));</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>        answer <span class="op">+=</span> dp<span class="op">[</span>pattern1<span class="op">][</span>pattern2<span class="op">];</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>        answer <span class="op">%=</span> mod<span class="op">;</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>cout <span class="op">&lt;&lt;</span> answer <span class="op">&lt;&lt;</span> endl<span class="op">;</span></span></code></pre></div>
 
       </div>
     </div>
