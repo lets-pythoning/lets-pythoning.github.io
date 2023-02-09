@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf8" />
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <title>
+      
+        搜索与优化搜索 | NOTES
+      
+    </title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    
+      <link rel="apple-touch-icon"
+            sizes="180x180"
+            href="/images/apple-touch-icon.png"/>
+    
+    
+      <link rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/images/favicon-32x32.png"/>
+    
+    
+      <link rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/images/favicon-16x16.png"/>
+    
+    
+      <link rel="mask-icon"
+            href="/images/logo.svg"
+            color=""/>
+    
+    
+    <link rel="stylesheet" type="text/css" href="/css/layout.css"/>
+    
+    
+  <link rel="stylesheet" type="text/css" href="/css/post.css"/>
+  
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div class="head">
+      <div class="nav">
+        <a href="/" class="nav-logo">
+          <img alt="logo" height="60px" width="60px" src="/images/logo.svg" />
+        </a>
+        <input id="navBtn" type="checkbox"/>
+        <div class="nav-menu">
+          
+            
+              <a class="nav-menu-item" href="/informatics">信息学</a>
+            
+              <a class="nav-menu-item" href="/mathematics">数学</a>
+            
+              <a class="nav-menu-item" href="/nonsense">杂谈</a>
+            
+          
+        </div>
+        <label class="nav-btn" for="navBtn"></label>
+      </div>
+    </div>
+    <div class="body">
+      
+  <article class="post-content">
+    <div class="post-inner">
+      <div class="post-content__head">
+        <div class="post-title">搜索与优化搜索</div>
+        <div class="post-info">
+          
+  
+    <a href="/tags/%E4%BD%8D%E8%BF%90%E7%AE%97/" class="post-tag">#位运算</a>
+  
+    <a href="/tags/%E6%90%9C%E7%B4%A2/" class="post-tag">#搜索</a>
+  
+
+
+          <span class="post-date">2023/02/09</span>
+        </div>
+      </div>
+      <div class="post-content__body">
+        
+          <div class="post-gallery">
+            
+          </div>
+        
+        <h2 id="前言">前言</h2>
+<p>搜索, 往往也被称为暴力, 是省选及以下比赛拿到部分分的最好方法,
+如果优化得当, 甚至可能与正解复杂度媲美,
+<del>并且在洛谷中有大量水题</del></p>
+<p>感谢搜索, 搜索为我带来了提高组省一, 因此我对搜索颇有研究 (
+虽然造诣不深 ) , 这给我的代码能力带来了极大提高</p>
+<h2 id="朴素-dfs">朴素 DFS</h2>
+<p>DFS , 全称 Depth-First Search , 即深度优先搜索, 是最朴素的暴力,
+它没有统一的模版, 但是很好实现</p>
+<p>正确的 DFS 一定需要想清楚三个部分:</p>
+<ol type="1">
+<li>出口条件, 否则会无限递归</li>
+<li>参数定义, 类似动态规划</li>
+<li>我在函数内要做什么, 包括是否有后效性 ( 是否需要恢复现场 )
+等细节</li>
+</ol>
+<h3 id="p1019-单词接龙"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1019">P1019 单词接龙</a></h3>
+<p>纯 DFS 题</p>
+<p>对于以上所述的三个部分, 我们有:</p>
+<ol type="1">
+<li>没有可以接上的字符串即退出</li>
+<li>存长度和上次接入的单词, 存上次单词是为了判断是否有包含关系</li>
+<li>更新长度和上次单词, 继续调用, 单词是否使用过显然需要恢复现场</li>
+</ol>
+<p>DFS 部分代码如下:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> valid<span class="op">(</span>string a<span class="op">,</span> string b<span class="op">)</span>  <span class="co">// 用于求两个字符串重复长度</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> flag<span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> length <span class="op">=</span> min<span class="op">(</span>a<span class="op">.</span>length<span class="op">(),</span> b<span class="op">.</span>length<span class="op">());</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;</span> length<span class="op">;</span> i<span class="op">++)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        flag <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> j <span class="op">&lt;</span> i<span class="op">;</span> j<span class="op">++)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#123;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>a<span class="op">.</span>at<span class="op">(</span>a<span class="op">.</span>length<span class="op">()</span> <span class="op">-</span> i <span class="op">+</span> j<span class="op">)</span> <span class="op">!=</span> b<span class="op">.</span>at<span class="op">(</span>j<span class="op">))</span>  <span class="op">&#123;</span> flag <span class="op">=</span> <span class="kw">true</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#125;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>flag<span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">return</span> i<span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> dfs<span class="op">(</span><span class="dt">int</span> length<span class="op">,</span> <span class="at">const</span> string<span class="op">&amp;</span> current<span class="op">)</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="va">max_</span> <span class="op">=</span> max<span class="op">(</span>length<span class="op">,</span> <span class="va">max_</span><span class="op">);</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> n<span class="op">;</span> i<span class="op">++)</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>visited<span class="op">[</span>i<span class="op">])</span>  <span class="op">&#123;</span> <span class="cf">continue</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> overlap <span class="op">=</span> valid<span class="op">(</span>current<span class="op">,</span> words<span class="op">[</span>i<span class="op">]);</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>overlap<span class="op">)</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#123;</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>            visited<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>            dfs<span class="op">(</span>length <span class="op">+</span> words<span class="op">[</span>i<span class="op">].</span>length<span class="op">()</span> <span class="op">-</span> overlap<span class="op">,</span> words<span class="op">[</span>i<span class="op">]);</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>            visited<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#125;</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
+<h2 id="记忆化搜索">记忆化搜索</h2>
+<p>如果 DFS 具有返回值, 那么可以进行记忆化搜索,
+优化得当的记忆化搜索时间复杂度与 DP 相同</p>
+<p>对于记忆化, 一般建议使用 <code>map</code> 来存储, 不容易超空间</p>
+<h3 id="p1464-function"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1464">P1464 Function</a></h3>
+<p>纯记忆化搜索题, 甚至题目已经告诉如何 DFS 了, 无需分析, 记得开
+<code>long long</code></p>
+<p>DFS 部分代码如下:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">long</span> <span class="dt">long</span> function<span class="op">(</span><span class="dt">long</span> <span class="dt">long</span> x<span class="op">,</span> <span class="dt">long</span> <span class="dt">long</span> y<span class="op">,</span> <span class="dt">long</span> <span class="dt">long</span> z<span class="op">)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>x <span class="op">&lt;=</span> <span class="dv">0</span> <span class="op">||</span> y <span class="op">&lt;=</span> <span class="dv">0</span> <span class="op">||</span> z <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>memory<span class="op">.</span>find<span class="op">(</span>make_tuple<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> z<span class="op">))</span> <span class="op">!=</span> memory<span class="op">.</span>end<span class="op">())</span>  <span class="op">&#123;</span> <span class="cf">return</span> memory<span class="op">.</span>at<span class="op">(</span>make_tuple<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> z<span class="op">));</span> <span class="op">&#125;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>x <span class="op">&gt;</span> <span class="dv">20</span> <span class="op">||</span> y <span class="op">&gt;</span> <span class="dv">20</span> <span class="op">||</span> z <span class="op">&gt;</span> <span class="dv">20</span><span class="op">)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        memory<span class="op">[</span>make_tuple<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> z<span class="op">)]</span> <span class="op">=</span> function<span class="op">(</span><span class="dv">20</span><span class="op">,</span> <span class="dv">20</span><span class="op">,</span> <span class="dv">20</span><span class="op">);</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> memory<span class="op">.</span>at<span class="op">(</span>make_tuple<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> z<span class="op">));</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>x <span class="op">&lt;</span> y <span class="op">&amp;&amp;</span> y <span class="op">&lt;</span> z<span class="op">)</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        memory<span class="op">[</span>make_tuple<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> z<span class="op">)]</span> <span class="op">=</span> function<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> z <span class="op">-</span> <span class="dv">1</span><span class="op">)</span> <span class="op">+</span> function<span class="op">(</span>x<span class="op">,</span> y <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> z <span class="op">-</span> <span class="dv">1</span><span class="op">)</span> <span class="op">-</span> function<span class="op">(</span>x<span class="op">,</span> y <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> z<span class="op">);</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> memory<span class="op">.</span>at<span class="op">(</span>make_tuple<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> z<span class="op">));</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    memory<span class="op">[</span>make_tuple<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> z<span class="op">)]</span> <span class="op">=</span> function<span class="op">(</span>x <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> y<span class="op">,</span> z<span class="op">)</span> <span class="op">+</span> function<span class="op">(</span>x <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> y <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> z<span class="op">)</span> <span class="op">+</span> function<span class="op">(</span>x <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> y<span class="op">,</span> z <span class="op">-</span> <span class="dv">1</span><span class="op">)</span> <span class="op">-</span> function<span class="op">(</span>x <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> y <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> z <span class="op">-</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> memory<span class="op">.</span>at<span class="op">(</span>make_tuple<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> z<span class="op">));</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
+<h2 id="最优期望剪枝">最优期望剪枝</h2>
+<p>如果要求一个最值, 可以考虑最优期望剪枝, 这是一种很通用的剪枝</p>
+<p>以最大值为例, 每次 DFS 时, 求出继续递归下去, 且每次选择都是最优的 (
+无论是否可能 ) , 最大可能得到的值是多少,
+如果这个值仍然小于等于当前最大值, 可以直接返回, 不可能取得最值</p>
+<p>这种方法要求求出的最大可能得到的值必须大于等于真实值,
+这种方式实际上是 A* 和 IDA* 中的估价函数</p>
+<h3 id="p1731-生日蛋糕"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1731">P1731 生日蛋糕</a></h3>
+<p>比较难的一道最优期望剪枝题, 涉及三个剪枝:</p>
+<ol type="1">
+<li>如果从当前层开始, 一直取最小表面积, 仍然大于等于当前最小值,
+直接返回</li>
+<li>如果从当前层开始, 一直取最小体积, 体积仍然会超出限制 <code>n</code>
+, 直接返回</li>
+<li>该剪枝是剪枝 1 的加强版, 根据当前剩余体积算出最小可能的表面积 (
+显然层数越少, 表面积越小, 所以算只做一层的表面积 ) ,
+如果加上已有的表面积大于等于当前最小值, 直接返回</li>
+</ol>
+<p>首先在主函数预处理出最小的可能体积和最小的可能表面积, 并求前缀和,
+方便剪枝操作, 代码如下:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> m<span class="op">;</span> i<span class="op">++)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 原题中带 π 了, 可以直接忽略</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    min_v<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> min_v<span class="op">[</span>i <span class="op">-</span> <span class="dv">1</span><span class="op">]</span> <span class="op">+</span> i <span class="op">*</span> i <span class="op">*</span> i<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    min_s<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> min_s<span class="op">[</span>i <span class="op">-</span> <span class="dv">1</span><span class="op">]</span> <span class="op">+</span> i <span class="op">*</span> i <span class="op">*</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
+<p>然后, 我们很容易就能实现 DFS 过程, 代码如下:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> dfs<span class="op">(</span><span class="dt">int</span> layer<span class="op">,</span> <span class="dt">int</span> v<span class="op">,</span> <span class="dt">int</span> s<span class="op">)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>v <span class="op">+</span> min_v<span class="op">[</span>layer<span class="op">]</span> <span class="op">&gt;</span> n<span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">return</span> <span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>s <span class="op">+</span> min_s<span class="op">[</span>layer<span class="op">]</span> <span class="op">&gt;=</span> answer<span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">return</span> <span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>s <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> <span class="op">(</span>n <span class="op">-</span> v<span class="op">)</span> <span class="op">/</span> r<span class="op">[</span>layer <span class="op">+</span> <span class="dv">1</span><span class="op">]</span> <span class="op">&gt;=</span> answer<span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">return</span> <span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>layer<span class="op">)</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>v <span class="op">==</span> n<span class="op">)</span>  <span class="op">&#123;</span> answer <span class="op">=</span> min<span class="op">(</span>answer<span class="op">,</span> s<span class="op">);</span> <span class="op">&#125;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> min<span class="op">(</span>r<span class="op">[</span>layer <span class="op">+</span> <span class="dv">1</span><span class="op">]</span> <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">int</span><span class="op">(</span>sqrt<span class="op">(</span>n <span class="op">-</span> v<span class="op">)));</span> i <span class="op">&gt;=</span> layer<span class="op">;</span> i<span class="op">--)</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> min<span class="op">(</span>h<span class="op">[</span>layer <span class="op">+</span> <span class="dv">1</span><span class="op">]</span> <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> <span class="op">(</span>n <span class="op">-</span> v<span class="op">)</span> <span class="op">/</span> <span class="op">(</span>i <span class="op">*</span> i<span class="op">));</span> j <span class="op">&gt;=</span> layer<span class="op">;</span> j<span class="op">--)</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#123;</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>            r<span class="op">[</span>layer<span class="op">]</span> <span class="op">=</span> i<span class="op">;</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            h<span class="op">[</span>layer<span class="op">]</span> <span class="op">=</span> j<span class="op">;</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 这里三目运算符表示, 从上向下看, 顶部的圆形面积实际就是最大一层的顶部面积</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 注意要倒序遍历层数, 这样表面积与体积才会单调下降, 否则剪枝会出错</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>            dfs<span class="op">(</span>layer <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> v <span class="op">+</span> i <span class="op">*</span> i <span class="op">*</span> j<span class="op">,</span> s <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> i <span class="op">*</span> j <span class="op">+</span> <span class="op">(</span>layer <span class="op">==</span> m <span class="op">?</span> i <span class="op">*</span> i <span class="op">:</span> <span class="dv">0</span><span class="op">));</span>  </span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#125;</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
+<h2 id="迭代加深搜索">迭代加深搜索</h2>
+<p>迭代加深搜索, 又称 ID , 即 Iterative DFS , 是一种使用 DFS 实现类似
+BFS 的效果的算法, 它能解决的问题与 BFS 一致</p>
+<p>我们知道, DFS 递归会形成一棵搜索树, 这棵树每次向下增长的节点巨大,
+以至于可能对于第<span class="math inline">\(h\)</span>层的节点数<span
+class="math inline">\(n_h\)</span>, 有<span
+class="math inline">\(n_h\geqslant\sum_{i=1}^{h-1}n_i\)</span></p>
+<p>对于这种情况, 我们可以设定一个最大递归深度, 到达该深度就不再递归,
+如果没有取到可能的答案, 将最大递归深度增加,
+尽管这样会多次重复遍历搜索树的一部分, 但这一部分可以忽略不计</p>
+<p>对于迭代加深搜索, DFS 需要返回值以确定是否取到答案</p>
+<h3 id="uva529-additional-chains"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/UVA529">UVA529 Additional
+Chains</a></h3>
+<p>为数不多的纯迭代加深题, 难度不高, 需要注意的是最大递归深度可以从<span
+class="math inline">\(\log_2n\)</span>开始, 这是由最优期望的思想决定</p>
+<p>由于第一个数已经决定, 所以深度初始为 2 即可</p>
+<p>主函数部分如下:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>max_depth <span class="op">=</span> log2<span class="op">(</span>n<span class="op">);</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(!</span>dfs<span class="op">(</span><span class="dv">2</span><span class="op">)</span> <span class="op">&amp;&amp;</span> max_depth<span class="op">++);</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> max_depth <span class="op">-</span> <span class="dv">2</span><span class="op">;</span> i<span class="op">++)</span>  <span class="op">&#123;</span> cout <span class="op">&lt;&lt;</span> result<span class="op">[</span>i<span class="op">]</span> <span class="op">&lt;&lt;</span> <span class="ch">&#39; &#39;</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>cout <span class="op">&lt;&lt;</span> result<span class="op">[</span>max_depth <span class="op">-</span> <span class="dv">1</span><span class="op">]</span> <span class="op">&lt;&lt;</span> endl<span class="op">;</span></span></code></pre></div>
+<p>如果只迭代加深仍然无法通过, 再加上一个最优期望剪枝即可:
+一个数显然不能是它前一个数的两倍以上, 否则根据二进制表示, 一定会有<span
+class="math inline">\(a_k\)</span>无法取到;
+因此算出后面的每个数都翻一倍的结果, 是否能超过<span
+class="math inline">\(n\)</span></p>
+<p>DFS 部分代码如下:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> dfs<span class="op">(</span><span class="dt">int</span> index<span class="op">)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>index <span class="op">&gt;</span> max_depth<span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>result<span class="op">[</span>index <span class="op">-</span> <span class="dv">1</span><span class="op">]</span> <span class="op">==</span> n<span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">((</span><span class="dt">long</span> <span class="dt">long</span><span class="op">)(</span>result<span class="op">[</span>index <span class="op">-</span> <span class="dv">1</span><span class="op">])</span> <span class="op">&lt;&lt;</span> <span class="op">(</span>max_depth <span class="op">-</span> index <span class="op">+</span> <span class="dv">1</span><span class="op">)</span> <span class="op">&lt;</span> n<span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span> <span class="op">&#125;</span>  <span class="co">// 最优期望剪枝</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> visited<span class="op">[</span><span class="dv">10001</span><span class="op">]</span> <span class="op">=</span> <span class="op">&#123;</span> <span class="kw">false</span> <span class="op">&#125;;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;</span> index<span class="op">;</span> i<span class="op">++)</span>  <span class="co">// 当前位置还未确认, 因此不取等</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> j <span class="op">&lt;</span> index<span class="op">;</span> j<span class="op">++)</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#123;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> temp <span class="op">=</span> result<span class="op">[</span>i<span class="op">]</span> <span class="op">+</span> result<span class="op">[</span>j<span class="op">];</span>  <span class="co">// 从已经确定的数中枚举组合成新的数, 确保满足限制</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>temp <span class="op">&gt;</span> n<span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">break</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>visited<span class="op">[</span>temp<span class="op">]</span> <span class="op">||</span> temp <span class="op">&lt;</span> result<span class="op">[</span>index <span class="op">-</span> <span class="dv">1</span><span class="op">])</span>  <span class="op">&#123;</span> <span class="cf">continue</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>            result<span class="op">[</span>index<span class="op">]</span> <span class="op">=</span> temp<span class="op">;</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>            visited<span class="op">[</span>temp<span class="op">]</span> <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>dfs<span class="op">(</span>index <span class="op">+</span> <span class="dv">1</span><span class="op">))</span>  <span class="op">&#123;</span> <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#125;</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
+<h2 id="ida">IDA*</h2>
+<p>IDA* , 中文译名是启发式迭代加深搜索, 我们知道,
+迭代加深搜索有一个最大深度, 根据最优期望优化的思想, 考虑在 DFS
+内判断到达目标状态最少还需要几步, 称为估值,
+用估值加上当前深度再与最大深度比较, 这就是启发式迭代加深,
+计算估值的函数一般称为 <code>eval</code> 即估值函数,
+估值函数必须大于真实值</p>
+<p>复杂度玄学</p>
+<h3 id="p2324-骑士精神"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2324">P2324 骑士精神</a></h3>
+<p>IDA* 经典题, 第一个思路是, 骑士比较多, 但空格只有一个,
+所以我们可以移动空格而不是骑士</p>
+<p>然后设计估值函数, 对于当前状态和目标状态中的每一个不同点,
+都至少需要一步移动</p>
+<p>DFS 部分代码如下:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="at">const</span> vector<span class="op">&lt;</span>pair<span class="op">&lt;</span><span class="dt">int</span><span class="op">,</span> <span class="dt">int</span><span class="op">&gt;</span> <span class="op">&gt;</span> offsets <span class="op">=</span> <span class="op">&#123;</span> <span class="op">&#123;</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">2</span> <span class="op">&#125;,</span> <span class="op">&#123;</span> <span class="dv">1</span><span class="op">,</span> <span class="op">-</span><span class="dv">2</span> <span class="op">&#125;,</span> <span class="op">&#123;</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span> <span class="op">&#125;,</span> <span class="op">&#123;</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="op">-</span><span class="dv">2</span> <span class="op">&#125;,</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                                        <span class="op">&#123;</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">1</span> <span class="op">&#125;,</span> <span class="op">&#123;</span> <span class="op">-</span><span class="dv">2</span><span class="op">,</span> <span class="dv">1</span> <span class="op">&#125;,</span> <span class="op">&#123;</span> <span class="dv">2</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span> <span class="op">&#125;,</span> <span class="op">&#123;</span> <span class="op">-</span><span class="dv">2</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span> <span class="op">&#125;</span> <span class="op">&#125;;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">const</span> <span class="dt">int</span> target<span class="op">[</span><span class="dv">10</span><span class="op">][</span><span class="dv">10</span><span class="op">]</span> <span class="op">=</span> <span class="op">&#123;</span> <span class="op">&#123;</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span> <span class="op">&#125;,</span> <span class="op">&#123;</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">2</span> <span class="op">&#125;,</span> <span class="op">&#123;</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">2</span> <span class="op">&#125;,</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                             <span class="op">&#123;</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">2</span> <span class="op">&#125;,</span> <span class="op">&#123;</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">2</span> <span class="op">&#125;,</span> <span class="op">&#123;</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span> <span class="op">&#125;</span> <span class="op">&#125;;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> eval<span class="op">()</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> result <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="dv">5</span><span class="op">;</span> i<span class="op">++)</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> j <span class="op">&lt;=</span> <span class="dv">5</span><span class="op">;</span> j<span class="op">++)</span>  <span class="op">&#123;</span> result <span class="op">+=</span> target<span class="op">[</span>i<span class="op">][</span>j<span class="op">]</span> <span class="op">!=</span> matrix<span class="op">[</span>i<span class="op">][</span>j<span class="op">];</span> <span class="op">&#125;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> dfs<span class="op">(</span><span class="dt">int</span> blank_i<span class="op">,</span> <span class="dt">int</span> blank_j<span class="op">,</span> <span class="dt">int</span> index<span class="op">)</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>index <span class="op">+</span> eval<span class="op">()</span> <span class="op">&gt;</span> max_depth<span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>eval<span class="op">())</span>  <span class="op">&#123;</span> <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span> <span class="op">&#125;</span>  <span class="co">// 如果与目标状态没有不同, 则成功</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="kw">auto</span> offset <span class="op">:</span> offsets<span class="op">)</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> x <span class="op">=</span> blank_i <span class="op">+</span> offset<span class="op">.</span>first<span class="op">,</span> y <span class="op">=</span> blank_j <span class="op">+</span> offset<span class="op">.</span>second<span class="op">;</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>x <span class="op">&lt;</span> <span class="dv">1</span> <span class="op">||</span> x <span class="op">&gt;</span> <span class="dv">5</span> <span class="op">||</span> y <span class="op">&lt;</span> <span class="dv">1</span> <span class="op">||</span> y <span class="op">&gt;</span> <span class="dv">5</span><span class="op">)</span>  <span class="op">&#123;</span> <span class="cf">continue</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>        swap<span class="op">(</span>matrix<span class="op">[</span>x<span class="op">][</span>y<span class="op">],</span> matrix<span class="op">[</span>blank_i<span class="op">][</span>blank_j<span class="op">]);</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>dfs<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> index <span class="op">+</span> <span class="dv">1</span><span class="op">))</span>  <span class="op">&#123;</span> <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        swap<span class="op">(</span>matrix<span class="op">[</span>x<span class="op">][</span>y<span class="op">],</span> matrix<span class="op">[</span>blank_i<span class="op">][</span>blank_j<span class="op">]);</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
+<h2 id="位运算优化搜索">位运算优化搜索</h2>
+<p>位运算优化搜索可以优化代码常数,
+核心思想是将标记数组状态压缩成一个二进制串, 在 DLX ( Dancing Links X ,
+舞蹈链 ) 能解决的精确覆盖类问题中经常使用, 比如数独类问题,
+和经典的智慧珠游戏</p>
+<p>位运算优化搜索有一道好题, 但由于过于毒瘤, 代码和思路都很长,
+所以在另一篇文章中单独讲</p>
+<h2 id="朴素-bfs">朴素 BFS</h2>
+<p>BFS , 全称 Breadth-First Search , 即广度优先搜索,
+在无权图最短路中有广泛的应用, 它的三个部分与 DFS 是相同的,
+只需要手动维护一个队列</p>
+<p>BFS 有两个性质:</p>
+<ol type="1">
+<li>两段性: BFS 队列中同时只能存在两种不同阶段的状态</li>
+<li>单调性: 简单来说, 即相同状态都在一段中</li>
+</ol>
+<h3 id="p1332-血色先锋队"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1332">P1332 血色先锋队</a></h3>
+<p>多源 BFS 模版题, 与普通的 BFS 区别不大,
+只需要在队列中将多个源全部推进去即可</p>
+<p>我们可以使用 <code>distance_</code> 数组代替标记数组,
+将初始的距离设为 1 , 最后输出时再减去 1 即可, 代码如下:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="op">&#123;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    cin <span class="op">&gt;&gt;</span> n <span class="op">&gt;&gt;</span> m <span class="op">&gt;&gt;</span> a <span class="op">&gt;&gt;</span> b<span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> a<span class="op">;</span> i<span class="op">++)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        cin <span class="op">&gt;&gt;</span> x <span class="op">&gt;&gt;</span> y<span class="op">;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        q<span class="op">.</span>emplace<span class="op">(</span>x<span class="op">,</span> y<span class="op">);</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">distance_</span><span class="op">[</span>x<span class="op">][</span>y<span class="op">]</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(!</span>q<span class="op">.</span>empty<span class="op">())</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">auto</span> temp <span class="op">=</span> q<span class="op">.</span>front<span class="op">();</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        q<span class="op">.</span>pop<span class="op">();</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="kw">auto</span> offset <span class="op">:</span> offsets<span class="op">)</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#123;</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> next_x <span class="op">=</span> temp<span class="op">.</span>first <span class="op">+</span> offset<span class="op">.</span>first<span class="op">,</span> next_y <span class="op">=</span> temp<span class="op">.</span>second <span class="op">+</span> offset<span class="op">.</span>second<span class="op">;</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>next_x <span class="op">&gt;</span> n <span class="op">||</span> next_x <span class="op">&lt;</span> <span class="dv">1</span> <span class="op">||</span> next_y <span class="op">&gt;</span> m <span class="op">||</span> next_y <span class="op">&lt;</span> <span class="dv">1</span> <span class="op">||</span> <span class="va">distance_</span><span class="op">[</span>next_x<span class="op">][</span>next_y<span class="op">])</span>  <span class="op">&#123;</span> <span class="cf">continue</span><span class="op">;</span> <span class="op">&#125;</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>            <span class="va">distance_</span><span class="op">[</span>next_x<span class="op">][</span>next_y<span class="op">]</span> <span class="op">=</span> <span class="va">distance_</span><span class="op">[</span>temp<span class="op">.</span>first<span class="op">][</span>temp<span class="op">.</span>second<span class="op">]</span> <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>            q<span class="op">.</span>emplace<span class="op">(</span>next_x<span class="op">,</span> next_y<span class="op">);</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        <span class="op">&#125;</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> b<span class="op">;</span> i<span class="op">++)</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#123;</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>        cin <span class="op">&gt;&gt;</span> x <span class="op">&gt;&gt;</span> y<span class="op">;</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>        cout <span class="op">&lt;&lt;</span> <span class="va">distance_</span><span class="op">[</span>x<span class="op">][</span>y<span class="op">]</span> <span class="op">-</span> <span class="dv">1</span> <span class="op">&lt;&lt;</span> endl<span class="op">;</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    <span class="op">&#125;</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="op">&#125;</span></span></code></pre></div>
+<h2 id="a">A*</h2>
+<p>类似 IDA* 的思想, 我们有一个估值函数, 感性理解,
+估值函数较小的状态离最终的目标更可能更近, 所以我们可以将 BFS
+的队列改成优先队列 ( 小根堆 ) , 将估值作为第一关键字即可, 正确性显然,
+因为出队顺序不影响正确性, 要注意的是, A* 的估值函数无需保证大于真实值,
+但是如果设计不得当会影响复杂度</p>
+<p>A* 可以解决 k 短路问题, A* 也可以推广到一般的使用队列的最短路中,
+洛谷上没有找到比较简单的例题, 故无例题</p>
+<h2 id="折半搜索">折半搜索</h2>
+<p>折半搜索, 又称 meet-in-the-middle , 是一种适用于 DFS 和 BFS
+的通用优化, 它的核心思想是将解空间分为两部分, 先搜索前半部分,
+再搜索后半部分, 这样可以避免搜索树过于庞大</p>
+<p>洛谷上没有折半搜索的题, 故无例题</p>
+
+      </div>
+    </div>
+  </article>
+  <div class="post__foot">
+    
+    <div class="post-nav">
+  
+    <a class="post-nav-item-left" href="/2023/02/%E6%9B%B4%E6%96%B0%E8%AE%A1%E5%88%92/">
+      <div class="text-align">
+        <svg t="1670570876164"
+             class="icon"
+             viewBox="0 0 1024 1024"
+             width="16"
+             height="16">
+          <path d="M384 512L731.733333 202.666667c17.066667-14.933333 19.2-42.666667 4.266667-59.733334-14.933333-17.066667-42.666667-19.2-59.733333-4.266666l-384 341.333333c-10.666667 8.533333-14.933333 19.2-14.933334 32s4.266667 23.466667 14.933334 32l384 341.333333c8.533333 6.4 19.2 10.666667 27.733333 10.666667 12.8 0 23.466667-4.266667 32-14.933333 14.933333-17.066667 14.933333-44.8-4.266667-59.733334L384 512z" p-id="14596"/>
+        </svg>
+        <span class="text-small">上一篇</span>
+      </div>
+      <div>更新计划</div>
+    </a>
+  
+  <div class="vhr"></div>
+  
+    <a class="post-nav-item-right" href="/2023/01/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E5%81%9A%E9%A2%98%E6%9D%82%E6%83%B3/">
+      <div class="text-align">
+        <span class="text-small">下一篇</span>
+        <svg t="1670570876164"
+             class="icon"
+             viewBox="0 0 1024 1024"
+             transform="scale(-1,-1)"
+             width="16"
+             height="16">
+          <path d="M384 512L731.733333 202.666667c17.066667-14.933333 19.2-42.666667 4.266667-59.733334-14.933333-17.066667-42.666667-19.2-59.733333-4.266666l-384 341.333333c-10.666667 8.533333-14.933333 19.2-14.933334 32s4.266667 23.466667 14.933334 32l384 341.333333c8.533333 6.4 19.2 10.666667 27.733333 10.666667 12.8 0 23.466667-4.266667 32-14.933333 14.933333-17.066667 14.933333-44.8-4.266667-59.733334L384 512z" p-id="14596"/>
+        </svg>
+      </div>
+      动态规划做题杂想
+    </a>
+  
+</div>
+
+    
+    
+  </div>
+
+    </div>
+    <div class="foot">
+      <div class="foot-inner">
+        <div class="foot__head">
+          
+            <div class="foot-line">
+              <div class="matts">披</div><div class="matts">绣</div><div class="matts">闼</div>
+            </div>
+          
+            <div class="foot-line">
+              <div class="matts">俯</div><div class="matts">雕</div><div class="matts">甍</div>
+            </div>
+          
+            <div class="foot-line">
+              <div class="matts">山</div><div class="matts">原</div><div class="matts">旷</div><div class="matts">其</div><div class="matts">盈</div><div class="matts">视</div>
+            </div>
+          
+            <div class="foot-line">
+              <div class="matts">川</div><div class="matts">泽</div><div class="matts">纡</div><div class="matts">其</div><div class="matts">骇</div><div class="matts">瞩</div>
+            </div>
+          
+        </div>
+        <div class="foot__body">
+          
+            <div class="foot-item">
+              <div class="foot-item__head">朋友</div>
+              <div class="foot-item__body">
+                
+                  <div class="text">
+                    <img alt="link"
+                         height="20px"
+                         width="20px"
+                         src="/images/icon/icon-link.svg"/>
+                    <a class="foot-link" target="_blank" rel="noopener" href="https://github.com/hooozen/hexo-theme-tranquility">Theme Tranquility</a>
+                  </div>
+                
+                <div class="text">
+                  <img alt="link"
+                       height="20px"
+                       width="20px"
+                       src="/images/icon/icon-link+.svg"/>
+                  <a class="foot-link"
+                     href="mailto:arthureuler.pythoning@gmail.com?subject=%E7%94%B3%E8%AF%B7%20Hozen.site%20%E7%9A%84%E5%8F%8B%E9%93%BE%E4%BD%8D%E7%BD%AE">
+                  申请友链</a>
+                </div>
+              </div>
+            </div>
+          
+          
+            <div class="foot-item">
+              <div class="foot-item__head">账号</div>
+              <div class="foot-item__body">
+                
+                  <div class="text">
+                    <img alt="link" height="20px" width="20px" src="/images/logo-github.svg"/>
+                    <a class="foot-link" target="_blank" rel="noopener" href="https://github.com/lets-pythoning/">github</a>
+                  </div>
+                
+                  <div class="text">
+                    <img alt="link" height="20px" width="20px" src="/images/logo-zh.svg"/>
+                    <a class="foot-link" target="_blank" rel="noopener" href="https://www.zhihu.com/people/lets-pythoning/">知乎</a>
+                  </div>
+                
+                  <div class="text">
+                    <img alt="link" height="20px" width="20px" src="/images/logo-luogu.png"/>
+                    <a class="foot-link" target="_blank" rel="noopener" href="https://www.luogu.com.cn/user/548505">洛谷</a>
+                  </div>
+                
+              </div>
+            </div>
+          
+          <div class="foot-item">
+            <div class="foot-item__head">联系</div>
+            <div class="foot-item__body">
+              <div class="text">
+                <img alt="link"
+                     height="20px"
+                     width="20px"
+                     src="/images/icon/icon-email.svg"/>
+                <a class="foot-link" href="mailto:arthureuler.pythoning@gmail.com">arthureuler.pythoning@gmail.com</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="copyright">
+          <a href="http://example.com">NOTES</a> &nbsp;|&nbsp;由&nbsp;<a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>&nbsp;及&nbsp;
+          <svg width="20" height="20" viewBox="0 0 725 725">
+            <path fill-rule="evenodd" fill="rgb(221, 221, 221)"
+            d="M145.870,236.632 L396.955,103.578 L431.292,419.44 L156.600,522.53 L145.870,236.632 Z" />
+            <path fill-rule="evenodd" fill="rgb(159, 159, 159)"
+            d="M396.955,103.578 L564.345,234.486 L611.558,513.469 L431.292,419.44 L396.955,103.578 Z" />
+            <path fill-rule="evenodd" fill="rgb(0, 0, 0)"
+            d="M431.292,419.44 L611.558,513.469 L358.327,595.18 L156.600,522.53 L431.292,419.44 Z" />
+          </svg>
+          <a target="_blank" rel="noopener" href="https://github.com/hooozen/hexo-theme-tranquility">致远</a>&nbsp;驱动
+        </div>
+      </div>
+    </div>
+    
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    
+  
+
+  </body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
