@@ -113,13 +113,11 @@ class="math inline">\(\operatorname{match}(x,\ y)\)</span>是一个返回 0
 和 1 的函数, 代表<span class="math inline">\(x\)</span>, <span
 class="math inline">\(y\)</span>两个字符是否是匹配的括号</p>
 <p><span class="math display">\[
-dp_i=\left\{
-    \begin{align*}
+dp_i=\begin{cases}
     0\quad&amp;\text{if}\ s_i\in\{\ &#39;(&#39;,\ &#39;[&#39;\ \}\\
     0\quad&amp;\text{if}\ \operatorname{match}(s_i,\ s_{i-dp_{i-1}})=0\\
     dp_{i-1}+dp_{i-dp_{i-1}-1}+2\quad&amp;\text{otherwise}
-    \end{align*}
-\right.
+    \end{cases}
 \]</span></p>
 <p>边界条件: 全部初始化为 0 即可</p>
 <h2 id="p1854-花店橱窗布置"><a
@@ -131,8 +129,8 @@ target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1854">P18
 <p>状态定义: 定义<span class="math inline">\(dp_{i,\
 j}\)</span>为走到点<span class="math inline">\((i,\
 j)\)</span>时能取到的最大价值</p>
-<p>状态转移方程:</p>
-<p>定义价值矩阵为<span class="math inline">\(a\)</span>, 显然有</p>
+<p>状态转移方程: 定义价值矩阵为<span class="math inline">\(a\)</span>,
+显然有</p>
 <p><span class="math display">\[
 dp{i,\ j}=\max(dp_{i-1,\ j-1}+a_{i,\ j},\ dp_{i, j-1})
 \]</span></p>
@@ -159,8 +157,7 @@ class="math inline">\(dp_i\)</span>为所有满足<span
 class="math inline">\(x\in a\)</span>且<span
 class="math inline">\(x\&amp;2^i=1\)</span>的<span
 class="math inline">\(x\)</span>为结尾的子序列的最大长度</p>
-<p>状态转移:</p>
-<p>此状态看似不好转移, 但其实还算容易想, 考虑对于任意一个数,
+<p>状态转移: 此状态看似不好转移, 但其实还算容易想, 考虑对于任意一个数,
 它可以接到任何一个与它有至少一个相同二进制位的数上, 并作为结尾继续转移,
 因此想到将对原数组的遍历作为外层循环 ( 当前遍历到的数表示为<span
 class="math inline">\(a_i\)</span> ) , 同时对于<span
@@ -194,6 +191,114 @@ class="math inline">\(i\)</span>要倒序遍历, 遍历时要求<span
 class="math inline">\(k\geqslant a_{i,\ j}\)</span>, 初始值将<span
 class="math inline">\(n+1\)</span>这一行全部赋值为 <code>true</code>
 即可</p>
+<h2 id="cf985e-pencils-and-boxes"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/CF985E">CF985E Pencils and
+Boxes</a></h2>
+<p>思路一: 不要求保持原顺序 ( 否则就很简单了 ) ,
+将原序列排序后显然是最优的, 因为若交换两个数, 相当于将其中一个减少,
+另一个增加, 对于任意两个不以这两个数为其中一端的段, 其中一段差不变,
+而另一段差必定变大, 不如排序后优</p>
+<p>思路二: 输出有没有解, 考虑可达性 DP , 由数据范围可知只能允许一维 DP ,
+通常的写法应该是记录以某个点为结尾合不合法</p>
+<p>状态定义: 定义<span class="math inline">\(dp_i\)</span>为原序列<span
+class="math inline">\(a\)</span>的前<span
+class="math inline">\(i\)</span>个元素能否构成满足条件的分组方案</p>
+<p>状态转移: 根据边界条件容易得到 ( <span
+class="math inline">\(n\)</span>, <span
+class="math inline">\(k\)</span>, <span
+class="math inline">\(d\)</span>含义见题面 )</p>
+<p><span class="math display">\[
+\forall j\in[i-k+1,\ n],\ dp_j=1\quad\text{if}\ a_j-a_i\leqslant d,\
+dp_{i-1}
+\]</span></p>
+<p>但这样会超时 ( 时间复杂度是<span
+class="math inline">\(O(n^2)\)</span>的 ) , 考虑如下优化</p>
+<ul>
+<li><span class="math inline">\(a_j-a_i\)</span>的值随着<span
+class="math inline">\(j\)</span>的增大单调不减, 因此一旦不合法,
+可以退出循环</li>
+<li>由于是直接赋值, 所以已经更新过的不必再更新, 即每次将<span
+class="math inline">\(dp_j\)</span>赋值为 <code>true</code> 时,
+下次循环最劣也从<span class="math inline">\(j\)</span>开始, 而非<span
+class="math inline">\(i-k+1\)</span></li>
+</ul>
+<p>这样每个位置最多更新一次, 复杂度均摊<span
+class="math inline">\(O(n)\)</span>, 可以通过</p>
+<p>边界条件: 注意, 我们只知道<span
+class="math inline">\(dp_0\)</span>一定为 <code>true</code> ,
+其它均不能保证, 且在遍历时当走到<span
+class="math inline">\(i\)</span>时, 只有<span
+class="math inline">\(i-1\)</span>以前的值不可能再被更新;
+其余值全部赋值为 <code>false</code> 即可</p>
+<h2 id="p1736-创意吃鱼法"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1736">P1736 创意吃鱼法</a></h2>
+<p>思路一: 根据数据范围容易得到大概是二维 DP ,
+通常的写法应该是记录以某个点为左下角 ( 其它角也可以, 下同 )
+的子矩阵中的最大值</p>
+<p>思路二: 对角线不好统计, 考虑拍扁成子矩阵的边, 因为是方阵,
+边长和对角线长是一样的, 因此只要存储最大的符合条件的子矩阵的边长即可</p>
+<p>状态定义: 定义<span class="math inline">\(dp_{i,\
+j}\)</span>为以<span class="math inline">\((i,\
+j)\)</span>为左下角的所有符合条件的子矩阵中, 最大一个的边长</p>
+<p>状态转移: 若<span class="math inline">\(dp_{i,\
+j}\)</span>的值为<span class="math inline">\(k\)</span>,
+其含义代表了从点<span class="math inline">\((i,\ j)\)</span>向上<span
+class="math inline">\(k\)</span>个单位, 向左或向右<span
+class="math inline">\(k\)</span>个单位, 都没有 1 , 归纳法可知,
+每次只要判断当前向上<span class="math inline">\(k+1\)</span>个单位,
+向左或向右<span class="math inline">\(k+1\)</span>个单位, 都没有 1 即可,
+每次从左上或右上转移来, 具体实现见下面状态转移方程</p>
+<p>令<span class="math inline">\(x\)</span>, <span
+class="math inline">\(y\)</span>, <span
+class="math inline">\(z\)</span>分别为向上, 向左, 向右极长的连续 0
+段的长度, 则有</p>
+<p><span class="math display">\[
+dp_{i,\ j}=\max(\min(x,\ y,\ dp_{i-1,\ j-1}),\ \min(x,\ z,\ dp_{i-1,\
+j+1}))+1
+\]</span></p>
+<p>边界条件: <span
+class="math inline">\(dp\)</span>数组赋值为原数组<span
+class="math inline">\(a\)</span>, 遍历时, 只遍历<span
+class="math inline">\(a_{i,\ j}\)</span>为 1 的点<span
+class="math inline">\((i,\ j)\)</span>即可; 求得<span
+class="math inline">\(x\)</span>, <span
+class="math inline">\(y\)</span>, <span
+class="math inline">\(z\)</span>注意控制边界; 答案在<span
+class="math inline">\(dp\)</span>数组中的最大值取得,
+在转移时顺路求一下就行</p>
+<h2 id="p4059-找爸爸"><a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P4059">P4059 找爸爸</a></h2>
+<p>思路一: 首先将题目弱化, 不考虑空格对相似程度的影响,
+这题就和最短编辑距离很像, 由于只有都不是空格的时候距离才有定义,
+加上一维表示空格状态, 0 代表都没有空格, 1 代表 A 串此时末尾有空格, 2
+代表 B 串此时末尾有空格, 如果两个串末尾都有空格,
+那么删掉这两个空格显然是更优的</p>
+<p>思路二: 想到对式子本身进行分解, 其含义相当于, 每进入一个空格段,
+相似程度减去<span class="math inline">\(A\)</span>,
+以后每再多加一个空格, 相似程度再减<span
+class="math inline">\(B\)</span></p>
+<p>状态定义: 定义<span class="math inline">\(dp_{i,\ j,\ k}\)</span>表示
+A 串处理了<span class="math inline">\(i\)</span>个字符, B 串处理了<span
+class="math inline">\(j\)</span>个字符, 空格状态为<span
+class="math inline">\(k\)</span>的最大相似程度</p>
+<p>状态转移: 显然有 ( <span class="math inline">\(d\)</span>, <span
+class="math inline">\(A\)</span>, <span
+class="math inline">\(B\)</span>含义见题面 )</p>
+<p><span class="math display">\[
+\begin{align*}
+dp_{i,\ j,\ 0}&amp;=\max(dp_{i-1,\ j-1,\ 0},\ dp_{i-1,\ j-1,\ 1},\
+dp_{i-1,\ j-1,\ 2})+d(x,\ y)\\
+dp_{i,\ j,\ 1}&amp;=\max(dp_{i,\ j-1,\ 0} - a,\ dp_{i,\ j-1,\ 1}-b,\
+dp_{i,\ j-1,\ 2}-a)\\
+dp_{i,\ j,\ 2}&amp;=\max(dp_{i-1,\ j, 0} - a,\ dp_{i-1,\ j,\ 1}-a,\
+dp_{i-1,\ j,\ 2}-b)
+\end{align*}
+\]</span></p>
+<p>边界条件: 首先, 可能出现负值, 因此全部初始化为负无穷, <span
+class="math inline">\(dp_{0,\ 0,\ 0}\)</span>赋值为 0 ; 其次,
+由于可能一个字符也还没处理, 所以遍历要从 0 开始, 而不是 1 ,
+边界注意判一下, 不要越界; 还有, 如果你对生物比较熟悉, 注意, 这题的顺序是
+<code>ATGC</code> , 而不是通常的 <code>ATCG</code></p>
 
       </div>
     </div>
