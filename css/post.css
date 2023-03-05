@@ -1,6 +1,6 @@
 @import url("/css/hljs-github.css");
 .body {
-  line-height: 2em;
+  line-height: 1.65em;
   overflow: hidden;
 }
 .post-inner {
@@ -95,4 +95,10 @@
   .post-gallery {
     grid-template-columns: 1fr 1fr;
   }
+}
+pre.sourceCode {
+  line-height: 1.45em !important;
+}
+p {
+  margin: 0 0 1.25em 0 !important;
 }
