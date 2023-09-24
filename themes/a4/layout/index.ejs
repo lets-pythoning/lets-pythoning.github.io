@@ -1,0 +1,9 @@
+<div class="post-main">
+    <% var allPages = site.pages.data %>
+    <% for(var i = 0; i < allPages.length; i++) {  %>
+       <% if(allPages[i].path == "index/index.html") { %>
+            <div class="post-md">
+                <%- allPages[i].content %>
+            </div>
+    <% break; }} %>
+</div>

@@ -1,0 +1,57 @@
+<div class="footer">
+    <% if(path != 'index.html') { %>
+        <span> 
+            <%= theme.footerLink.info %> 
+
+            <% for (name in theme.footerLink) { %>
+                <% if(name != 'info') { %>
+                    / <a href="<%- url_for(theme.footerLink[name]) %>"> <%= name %> </a>
+                <% } %>
+
+            <% } %>
+        </span>
+    <% } %>
+</div>
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    <% if(path == 'index.html'){ %>
+         <% if(theme.index.footer != null || theme.index.footer != "") { %>
+            <% if(theme.index.footer.length > "Email:".length && theme.index.footer.substring(0, 6) == "Email:") { %>
+                <% var email = theme.index.footer.substring(6, theme.index.footer.length) %>
+                <span class="index-footer-last-span">Email:<%- mail_to(email) %></span>
+            <% } else { %>
+                <span class="index-footer-last-span"><%= theme.index.footer %></span>
+            <% } %>
+        <% } %>
+    <% } else { %>
+            <span><%= theme.post.footer %></span>
+            <% if(theme.post.themeInfo) { %>
+                <span class="footer-last-span-right"><i>本站由<a href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            <% } %>
+    <% } %>
+</div>
+
+<% if(theme.cdn.enable) { %>
+    <% if(theme.cdn.choose == "aliyun") { %>
+        <%- css('https://npm.elemecdn.com/hexo-theme-a4@latest/source/css/a11y-dark.min.css') %>
+        <%- js('https://npm.elemecdn.com/hexo-theme-a4@latest/source/js/highlight.min.js') %>
+        <%- js('https://npm.elemecdn.com/hexo-theme-a4@latest/source/js/highlightjs-line-numbers.js') %>
+    <% } else if(theme.cdn.choose == "jsdelivr") { %>
+        <%- css('https://jsd.onmicrosoft.cn/npm/hexo-theme-a4@latest/source/css/a11y-dark.min.css') %>
+        <%- js('https://jsd.onmicrosoft.cn/npm/hexo-theme-a4@latest/source/js/highlight.min.js') %>
+        <%- js('https://jsd.onmicrosoft.cn/npm/hexo-theme-a4@latest/source/js/highlightjs-line-numbers.js') %>
+    <% } else if(theme.cdn.choose == "unpkg") { %>
+        <%- css('https://npm.onmicrosoft.cn/hexo-theme-a4@latest/source/css/a11y-dark.min.css') %>
+        <%- js('https://npm.onmicrosoft.cn/hexo-theme-a4@latest/source/js/highlight.min.js') %>
+        <%- js('https://npm.onmicrosoft.cn/hexo-theme-a4@latest/source/js/highlightjs-line-numbers.js') %>
+    <% } %>
+<% } else { %>
+    <%- css('css/a11y-dark.min.css') %>
+    <%- js('js/highlight.min.js') %>
+    <%- js('js/highlightjs-line-numbers.js') %>
+<% } %>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>

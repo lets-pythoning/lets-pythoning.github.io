@@ -1,0 +1,32 @@
+
+<div class="header">
+    <div class="header-container">
+        <img style="
+        width: 56px;
+        height: auto;" alt="^-^" cache-control="max-age=86400" class="header-img" src="<%- url_for('/img/favicon.webp') %>" width="10%"></img>
+        <div class="header-content">
+            <a class="logo" href="<%- url_for() %>"><%= config.title %></a> 
+            <span class="description"><%= config.description %></span> 
+        </div>
+        
+    </div>
+    
+   
+    <ul class="nav">
+        <% for (name in theme.menu) { %>
+            <% if(theme.menu[name].substring(1, theme.menu[name].length - 1) == path.substring(0, path.indexOf("/"))) { %>
+                <li><i>
+                    <% if(theme.color.enable) { %>
+                        <u>
+                            <a  href="<%- url_for(theme.menu[name]) %>"><%= name %></a>
+                        </u>
+                    <% } else { %>
+                        <a style="color: #4e7dde;" href="<%- url_for(theme.menu[name]) %>"><%= name %></a>
+                    <% } %>
+                </i></li>
+            <%} else {%>
+                <li><a href="<%- url_for(theme.menu[name]) %>"><%= name %></a></li>
+            <% } %>
+        <% } %>
+    </ul>
+</div>

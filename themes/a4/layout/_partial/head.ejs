@@ -1,0 +1,46 @@
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0,  viewport-fit=cover" name="viewport" />
+    <meta name="description" content="<%= page.title %>" />
+    <meta name="hexo-theme-A4" content="<%= theme.version %>" />
+    <link rel="alternate icon" type="image/webp" href="<%- url_for(theme.favicon) %>">
+    <title><%= config.title + (config.subtitle ? ' | ' + config.subtitle : '') %></title>
+
+    <% if(theme.cdn.enable && theme.cdn.choose != "") { %>
+        <% if(theme.cdn.choose == "aliyun") { %>
+            <%- css('https://npm.elemecdn.com/hexo-theme-a4@latest/source/css/reset.css') %>
+            <%- css('https://npm.elemecdn.com/hexo-theme-a4@latest/source/css/markdown.css') %>
+            <%- css('https://npm.elemecdn.com/hexo-theme-a4@latest/source/css/fonts.css') %> 
+            <!--注意：首页既不是post也不是page-->
+            <% if((is_post() || is_page()) && theme.comment.enable && (!page.hasOwnProperty('comment') ||(page.hasOwnProperty('comment') && page.comment))) { %>
+                <%- css('https://npm.elemecdn.com/hexo-theme-a4@latest/source/css/waline.css') %>
+            <% } %>
+        <% } else if(theme.cdn.choose == "jsdelivr") { %>
+            <%- css('https://jsd.onmicrosoft.cn/npm/hexo-theme-a4@latest/source/css/reset.css') %>
+            <%- css('https://jsd.onmicrosoft.cn/npm/hexo-theme-a4@latest/source/css/markdown.css') %>
+            <%- css('https://jsd.onmicrosoft.cn/npm/hexo-theme-a4@latest/source/css/fonts.css') %> 
+            <!--注意：首页既不是post也不是page-->
+            <% if((is_post() || is_page()) && theme.comment.enable && (!page.hasOwnProperty('comment') ||(page.hasOwnProperty('comment') && page.comment))) { %>
+                <%- css('https://jsd.onmicrosoft.cn/npm/hexo-theme-a4@latest/source/css/waline.css') %>
+            <% } %>
+        <% }  else if(theme.cdn.choose == "unpkg") { %>
+            <%- css('https://npm.onmicrosoft.cn/hexo-theme-a4@latest/source/css/reset.css') %>
+            <%- css('https://npm.onmicrosoft.cn/hexo-theme-a4@latest/source/css/markdown.css') %>
+            <%- css('https://npm.onmicrosoft.cn/hexo-theme-a4@latest/source/css/fonts.css') %> 
+            <!--注意：首页既不是post也不是page-->
+            <% if((is_post() || is_page()) && theme.comment.enable && (!page.hasOwnProperty('comment') ||(page.hasOwnProperty('comment') && page.comment))) { %>
+                <%- css('https://npm.onmicrosoft.cn/hexo-theme-a4@latest/source/css/waline.css') %>
+            <% } %>
+        <% } %>
+    <% } else { %>
+        <%- css('css/reset.css') %>
+        <%- css('css/markdown.css') %>
+        <%- css('css/fonts.css') %> 
+         <!--注意：首页既不是post也不是page-->
+        <% if((is_post() || is_page()) && theme.comment.enable && (!page.hasOwnProperty('comment') ||(page.hasOwnProperty('comment') && page.comment))) { %>
+            <%- css('css/waline.css') %>
+        <% } %>
+    <% } %>
+    <%- css('css/ui.css') %> 
+    <%- css('css/style.css') %>
+</head>
