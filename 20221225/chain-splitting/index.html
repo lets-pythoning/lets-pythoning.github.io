@@ -458,80 +458,70 @@ void tree_modify(int root, int modifier)  // 与 tree_query 类似, 不再介绍
     push_up(current);
 }
 </code></pre>
-<p>主函数如下:</p>
-<pre><code class="cpp">int main()
+<p>主函数部分如下:</p>
+<pre><code class="cpp">cin &gt;&gt; n;
+for (int i = 1; i &lt; n; i++)
 {
-    cin &gt;&gt; n;
-    for (int i = 1; i &lt; n; i++)
-    {
-        cin &gt;&gt; x &gt;&gt; y;
-        edges[x].emplace_back(y);
-        edges[y].emplace_back(x);
-    }
-    for (int i = 1; i &lt;= n; i++)  { cin &gt;&gt; weights[i]; }
+    cin &gt;&gt; x &gt;&gt; y;
+    edges[x].emplace_back(y);
+    edges[y].emplace_back(x);
+}
+for (int i = 1; i &lt;= n; i++)  { cin &gt;&gt; weights[i]; }
 
-    depths[1] = 1;
-    fathers[1] = 1;
+depths[1] = 1;
+fathers[1] = 1;
 
-    get_sons(1, -1);
-    chaining(1, 1);
-    build(1, n, 1);
+get_sons(1, -1);
+chaining(1, 1);
+build(1, n, 1);
 
-    cin &gt;&gt; q;
-    while (q --&gt; 0)
-    {
-        cin &gt;&gt; type &gt;&gt; x &gt;&gt; y;
-        if (type == "CHANGE")  { tree_modify(node_to_order[x], 1, n, 1, y); }
-        else if (type == "QSUM")  { cout &lt;&lt; sum_query(x, y) &lt;&lt; endl; }
-        else  { cout &lt;&lt; max_query(x, y) &lt;&lt; endl; }
-    }
-
-    return 0;
+cin &gt;&gt; q;
+while (q --&gt; 0)
+{
+    cin &gt;&gt; type &gt;&gt; x &gt;&gt; y;
+    if (type == "CHANGE")  { tree_modify(node_to_order[x], 1, n, 1, y); }
+    else if (type == "QSUM")  { cout &lt;&lt; sum_query(x, y) &lt;&lt; endl; }
+    else  { cout &lt;&lt; max_query(x, y) &lt;&lt; endl; }
 }
 </code></pre>
 <p>其余同模板</p>
 <h2 id="P3178-树上操作"><a href="#P3178-树上操作" class="headerlink" title="P3178 树上操作"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3178">P3178 树上操作</a></h2><p>树链剖分裸题, 要求树上单点加, 子树加, 查询树链和, 代码见模板</p>
 <h2 id="P2146-软件包管理器"><a href="#P2146-软件包管理器" class="headerlink" title="P2146 软件包管理器"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2146">P2146 软件包管理器</a></h2><p>树链剖分经典题, 不难发现这棵树的点权只有 0 或 1 , 代表未安装和已安装, 则安装操作抽象为将该节点到根的链上所有点修改为 1 , 卸载操作抽象为将以该节点为根的子树全部修改为 0 </p>
-<p>主函数如下: </p>
-<pre><code class="cpp">int main()
+<p>主函数部分如下: </p>
+<pre><code class="cpp">cin &gt;&gt; n;
+for (int i = 2; i &lt;= n; i++)
 {
-    cin &gt;&gt; n;
-    for (int i = 2; i &lt;= n; i++)
+    cin &gt;&gt; node;
+    edges[i].emplace_back(node + 1);
+    edges[node + 1].emplace_back(i);
+}
+
+depths[1] = 1;
+fathers[1] = 1;
+get_sons(1, -1);
+chaining(1, 1);
+
+cin &gt;&gt; q;
+while (q --&gt; 0)
+{
+    cin &gt;&gt; type &gt;&gt; node;
+    node++;
+    if (type == "install")
     {
-        cin &gt;&gt; node;
-        edges[i].emplace_back(node + 1);
-        edges[node + 1].emplace_back(i);
+        before = tree[1];
+        chain_modify(1, node, 1);
+        after = tree[1];
+
+        cout &lt;&lt; abs(after - before) &lt;&lt; endl;
     }
-
-    depths[1] = 1;
-    fathers[1] = 1;
-    get_sons(1, -1);
-    chaining(1, 1);
-
-    cin &gt;&gt; q;
-    while (q --&gt; 0)
+    else
     {
-        cin &gt;&gt; type &gt;&gt; node;
-        node++;
-        if (type == "install")
-        {
-            before = tree[1];
-            chain_modify(1, node, 1);
-            after = tree[1];
+        before = tree[1];
+        tree_modify(node, 0);
+        after = tree[1];
 
-            cout &lt;&lt; abs(after - before) &lt;&lt; endl;
-        }
-        else
-        {
-            before = tree[1];
-            tree_modify(node, 0);
-            after = tree[1];
-
-            cout &lt;&lt; abs(after - before) &lt;&lt; endl;
-        }
+        cout &lt;&lt; abs(after - before) &lt;&lt; endl;
     }
-
-    return 0;
 }
 </code></pre>
 
@@ -550,10 +540,6 @@ void tree_modify(int root, int modifier)  // 与 tree_query 类似, 不再介绍
                     
                         <a href='/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/'>
                             数据结构
-                        </a>
-                    
-                        <a href='/tags/%E6%A0%91%E8%AE%BA/'>
-                            树论
                         </a>
                     
                 </span>
